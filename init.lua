@@ -249,6 +249,14 @@ map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 map("n", "<leader>/", "<cmd>vsplit<CR>", { desc = "Split vertical" })
 map("n", "<leader>-", "<cmd>split<CR>", { desc = "Split horizontal" })
 map("n", "<leader>c", "<cmd>close<CR>", { desc = "Close split" })
+map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase height" })
+map("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease height" })
+map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease width" })
+map("n", "<C-Right>", "<cmd>vertical resize +2<CR>", { desc = "Increase width" })
+map("n", "<A-j>", "<cmd>m .+1<CR>==", { desc = "Move line down" })
+map("n", "<A-k>", "<cmd>m .-2<CR>==", { desc = "Move line up" })
+map("v", "<A-j>", ":m '>+1<CR>gv=gv", { desc = "Move selection down" })
+map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 -- }}}
 
 -- Buffers {{{
@@ -268,6 +276,38 @@ map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 map("n", "n", "nzzzv", { desc = "Next search (centered)" })
 map("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
+-- }}}
+
+-- Visual mode {{{
+map("v", "<", "<gv", { desc = "Indent left and reselect" })
+map("v", ">", ">gv", { desc = "Indent right and reselect" })
+map("v", "p", '"_dP', { desc = "Paste without yank" })
+-- }}}
+
+-- Comments {{{
+map("n", "<leader>c", "gcc", { remap = true, desc = "Toggle comment" })
+map("v", "<leader>c", "gc", { remap = true, desc = "Toggle comment" })
+-- }}}
+
+-- Files {{{
+map("n", "<leader>fc", "<cmd>e ~/.config/PureNvim/init.lua<CR>", { desc = "Edit config" })
+map("n", "<leader>pa", function()
+  local path = vim.fn.expand("%:p")
+  vim.fn.setreg("+", path)
+  print("file:", path)
+end, { desc = "Copy file path" })
+-- }}}
+
+-- Session {{{
+map("n", "<leader>ss", "<cmd>mksession! ~/.vim/session.vim<CR>", { desc = "Save session" })
+map("n", "<leader>sr", "<cmd>source ~/.vim/session.vim<CR>", { desc = "Restore session" })
+-- }}}
+
+-- Misc {{{
+map("n", "<leader>sp", "<cmd>set spell!<CR>", { desc = "Toggle spell check" })
+map("n", "<leader>sa", "ggVG", { desc = "Select all" })
+map("i", "<C-r><C-d>", '<C-r>=strftime("%Y-%m-%d")<CR>', { desc = "Insert date" })
+map("i", "<C-r><C-t>", '<C-r>=strftime("%H:%M:%S")<CR>', { desc = "Insert time" })
 -- }}}
 
 -- Quick compile shortcuts for C/Rust {{{
@@ -294,11 +334,53 @@ api.nvim_create_autocmd("BufReadPost", {
 })
 -- }}}
 
+-- Highlight yanked text {{{
+api.nvim_create_autocmd("TextYankPost", {
+  desc = "Highlight on yank",
+  group = augroup,
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+})
+-- }}}
+
 -- Create undo directory {{{
 local undodir = vim.fn.expand("~/.vim/undodir")
 if vim.fn.isdirectory(undodir) == 0 then
   vim.fn.mkdir(undodir, "p")
 end
+-- }}}
+
+-- Auto-close terminal {{{
+api.nvim_create_autocmd("TermClose", {
+  group = augroup,
+  callback = function()
+    if vim.v.event.status == 0 then
+      api.nvim_buf_delete(0, {})
+    end
+  end,
+})
+-- }}}
+
+-- Auto-resize splits {{{
+api.nvim_create_autocmd("VimResized", {
+  group = augroup,
+  callback = function()
+    vim.cmd("tabdo wincmd =")
+  end,
+})
+-- }}}
+
+-- Auto-create directories {{{
+api.nvim_create_autocmd("BufWritePre", {
+  group = augroup,
+  callback = function()
+    local dir = vim.fn.expand("<afile>:p:h")
+    if vim.fn.isdirectory(dir) == 0 then
+      vim.fn.mkdir(dir, "p")
+    end
+  end,
+})
 -- }}}
 
 -- }}}
@@ -530,6 +612,7 @@ local parsers_to_install = {
   { lang = "toml", repo = "https://github.com/tree-sitter/tree-sitter-toml" },
   { lang = "json", repo = "https://github.com/tree-sitter/tree-sitter-json" },
   { lang = "yaml", repo = "https://github.com/tree-sitter-grammars/tree-sitter-yaml" },
+  { lang = "yaml", repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown" },
 }
 
 local function parser_installed(lang)
@@ -694,10 +777,11 @@ local ok_starter = pcall(require, "mini.starter")
 if ok_starter then
   require("mini.starter").setup({
     header = table.concat({
-      " ",
-      " SYSTEMS DEV ",
-      " C / C++ / Rust ",
-      " ",
+      "╔═══════════════════════════════════════╗",
+      "║             PURE NVIM                 ║",
+      "║         SYSTEMS DEV                   ║",
+      "║       C / C++ / Rust                  ║",
+      "╚═══════════════════════════════════════╝",
     }, "\n"),
     items = {
       { name = "Find file",    action = pick_from_dashboard("files"),     section = "Actions" },
@@ -914,13 +998,13 @@ api.nvim_create_autocmd("LspAttach", {
 
 -- Diagnostics {{{
 vim.diagnostic.config({
-  virtual_text = { prefix = " " },
+  virtual_text = { prefix = "●" },
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = " ",
-      [vim.diagnostic.severity.WARN] = " ",
-      [vim.diagnostic.severity.INFO] = " ",
-      [vim.diagnostic.severity.HINT] = " ",
+      [vim.diagnostic.severity.ERROR] = "●",
+      [vim.diagnostic.severity.WARN] = "●",
+      [vim.diagnostic.severity.INFO] = "●",
+      [vim.diagnostic.severity.HINT] = "●",
     },
   },
   underline = true,
