@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/logo.png" alt="PureNvim" width="400">
+  <img src=".purenvim/assets/logo2.png" alt="PureNvim" width="400">
 </p>
 
 <p align="center">
-  <strong>Single-file Neovim for systems programming</strong>
+  <strong>Single-file, native-first, systems-focused.</strong>
 </p>
 
 <p align="center">
