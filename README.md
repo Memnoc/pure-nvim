@@ -1,5 +1,5 @@
 <p align="center">
-  <img src=".purenvim/assets/logo_2.png" alt="PureNvim" width="400">
+  <img src="./assets/logo_2.png" alt="PureNvim" width="400">
 </p>
 
 <p align="center">
