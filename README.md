@@ -1,5 +1,29 @@
 # PureNvim
 
+<p align="center">
+  <img src="./assets/logo_2.png" alt="PureNvim" width="400">
+</p>
+
+<p align="center">
+  <strong>Single-file, native-first, systems-focused.</strong>
+</p>
+
+<p align="center">
+  <a href="#installation">Install</a> •
+  <a href="#features">Features</a> •
+  <a href="#keybindings">Keybindings</a> •
+  <a href="#compile--run">Compile</a>
+</p>
+
+---
+
+- **Single `init.lua`** — but don't expect a 50 lines config
+- **Native Neovim 0.12+** — `vim.lsp`, `vim.treesitter`, `vim.pack`, `snippets`, `autocompletion`
+- **5 plugins** — can't promise will remain like that, but so far so good (also I' counting `mini` as one)
+- **Systems focus** — sprinkled some niceties for C mainly, and tried to the same for Rust and C++ for good measure
+
+
+## Intro
 I was tired (not really) and had some (lot) of time on my hands to do this, and actually learned a bit about
 Neovim, a fact I never failt to brag about using with my colleagues and friends.
 
