@@ -259,4 +259,4 @@ LMAO
 
 Do literally whatever you want with this.
 
-MIT
+[MIT](./LICENSE)
