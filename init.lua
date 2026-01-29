@@ -1,4 +1,18 @@
+-- INTRO {{{
+-- You are reading the main (and only) config file of PureNvim.
+-- PureNvim philosophy is giving the end user full control of the config with little to
+-- no abstractions. This is why the Core systems it's almot entirely native Neovim API.
+-- You may need to use a nightly version of Neovim. PureNvim was developed under Neovim 0.12.0.
+-- To navigate the (long) configuration, make use of the -- SECTION MARKERS {{{}}}:
+-- / to search
+-- C-zR to fold all section markers
+-- Space to open one section marker
+-- C-zM to unfold all section markers
+-- }}}
+
 -- GLOBALS {{{
+-- This is where your global values are grouped for efficiency and control.
+-- Generally, do not touch these, unless you want to add something.
 local o = vim.opt
 local g = vim.g
 local api = vim.api
@@ -7,6 +21,8 @@ local augroup = api.nvim_create_augroup("UserConfig", {})
 -- }}}
 
 -- PLUGINS {{{
+-- Add your plugins here.
+-- To add a language: https://github.com/Memnoc/pure-nvim/blob/main/recipes/add_language.md
 vim.pack.add({
   -- Core
   { src = "https://github.com/echasnovski/mini.nvim" },
@@ -16,10 +32,19 @@ vim.pack.add({
   -- LSP
   { src = "https://github.com/mason-org/mason.nvim" },
   { src = "https://github.com/p00f/clangd_extensions.nvim" },
+
+  -- Effects
+  { src = "https://github.com/sphamba/smear-cursor.nvim" },
+  { src = "https://github.com/karb94/neoscroll.nvim" },
 })
 -- }}}
 
 -- PASTEL_SORBET {{{
+-- The colorscheme of PureNvim!
+-- Started as a slight variation on the stock theme Sorbet,
+-- went through a TokyoNight Night phase, came out the other way
+-- with a lot of both, and some touch of originality based on my personal taste.
+-- TODO: add recipe on how to change the theme
 local pastel_sorbet = {
   bg = "#1c1826",
   bg_dark = "#14111c",
@@ -49,7 +74,9 @@ local pastel_sorbet = {
 -- }}}
 
 -- OPTIONS {{{
-
+-- Sane options and nothing more.
+-- Took heavy inspirations from various configs, so don't be surprise if
+-- you spot your favourite tech influencer settings here!
 -- Line numbers {{{
 o.number = true
 o.relativenumber = true
@@ -168,7 +195,12 @@ vim.g.kitty_fast_forwarded_modifiers = "super"
 -- }}}
 
 -- HIGHLIGHTS {{{
-
+-- This section is pure customization on various aspects of PureNvim.
+-- You could, in theory, disable most of this without breaking anything,
+-- However, being that PureNvim comes with a custom StatusLine and things of such nature,
+-- disabling things here will most cetainly result in aestehtic ugliness (at best).
+-- Make sure you do a borad search of these values throughout the config before
+-- commenting or deleting something out!
 local function set_highlights()
   local hl = api.nvim_set_hl
 
@@ -299,7 +331,8 @@ set_highlights()
 -- }}}
 
 -- KEYMAPPINGS {{{
-
+-- Most of the keymappings leave here. Some leave uner the plugins configurations,
+-- and all (big lie) are listed here: https://github.com/Memnoc/pure-nvim/blob/main/README.md
 g.mapleader = " "
 
 -- General {{{
@@ -341,8 +374,9 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- Better navigation {{{
 map("n", "J", "mzJ`z", { desc = "Join lines (keep cursor)" })
-map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
-map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+-- Check Neoscroll for this mapping
+-- map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
+-- map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 map("n", "n", "nzzzv", { desc = "Next search (centered)" })
 map("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
 -- }}}
@@ -405,6 +439,8 @@ end, { expr = true })
 -- }}}
 
 -- AUTOCMDS {{{
+-- These are the ones I use most, but you can disagree and remove/add as you please
+-- and most likely not break anything.
 
 -- Return to last position {{{
 api.nvim_create_autocmd("BufReadPost", {
@@ -471,7 +507,10 @@ api.nvim_create_autocmd("BufWritePre", {
 -- }}}
 
 -- TERMINAL {{{
-
+-- I am a big proponent of a central-framed floating terminal, and from the ToggleTerm days,
+-- I map that to <leader>9. You can remap it, of course, and not use the Neovim native terminal.
+-- The customization and aesthetic of the terminal are mostly here.
+-- I also use a horizontal terminal, triggered with C-/, also native.
 local float_term = { buf = nil, win = nil }
 local horiz_term = { buf = nil, win = nil }
 
@@ -751,6 +790,12 @@ api.nvim_create_autocmd("VimEnter", {
 -- }}}
 
 -- PLUGIN CONFIG {{{
+-- After you declare your plugins in the PLUGINS section,
+-- you come here to configure them.
+-- We always use a defensive approach, so if you miss a plugin it won't crash your config:
+-- local ok_yourplugin, yourplugin = pcall(require, "yourplugin")
+-- if your plugin then
+-- TODO: add some references to recipes here
 
 -- Mason {{{
 local ok_mason, mason = pcall(require, "mason")
@@ -947,7 +992,58 @@ end
 -- }}}
 
 -- mini.animate {{{
-require('mini.animate').setup()
+--  In case you want some nice effects without stressing your CPU
+--  that much, use this and disable Neoscroll and Smear
+-- require('mini.animate').setup()
+-- }}}
+
+-- Neoscroll {{{
+local ok_neoscroll, neoscroll = pcall(require, "neoscroll")
+if ok_neoscroll then
+  neoscroll.setup({
+    mappings = {
+      '<C-u>', '<C-d>',
+      '<C-b>', '<C-f>',
+      '<C-y>', '<C-e>',
+      'zt', 'zz', 'zb',
+    },
+    hide_cursor = true,
+    stop_eof = true,
+    respect_scrolloff = false,
+    cursor_scrolls_alone = true,
+    duration_multiplier = 1.0,
+    easing = 'linear',
+    pre_hook = nil,
+    post_hook = nil,
+    performance_mode = false,
+    ignored_events = {
+      'WinScrolled', 'CursorMoved'
+    },
+  })
+end
+-- }}}
+
+-- Smear cursor {{{
+local ok_smear, smear = pcall(require, "smear_cursor")
+if ok_smear then
+  smear.setup({
+    stiffness = 0.8,
+    trailing_stiffness = 0.6,
+    damping = 0.95,
+    distance_stop_animating = 0.5,
+    -- time_interval = 7, -- the lower you go, the more CPU intensive it is
+
+    smear_insert_mode = true,
+    stiffness_insert_mode = 0.5,
+    trailing_stiffness_insert_mode = 0.5,
+
+    cursor_color = pastel_sorbet.purple_bright,
+    smear_between_buffers = true,
+    smear_between_neighbor_lines = true,
+    scroll_buffer_space = true,
+    legacy_computing_symbols_support = false,
+  })
+end
 -- }}}
 
 -- clangd_extensions {{{
