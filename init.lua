@@ -11,6 +11,7 @@
 -- }}}
 
 -- GLOBALS {{{
+-- INFO: Globals
 -- This is where your global values are grouped for efficiency and control.
 -- Generally, do not touch these, unless you want to add something.
 local o = vim.opt
@@ -21,6 +22,7 @@ local augroup = api.nvim_create_augroup("UserConfig", {})
 -- }}}
 
 -- PLUGINS {{{
+-- INFO: plugins
 -- Add your plugins here.
 -- To add a language: https://github.com/Memnoc/pure-nvim/blob/main/recipes/add_language.md
 vim.pack.add({
@@ -35,11 +37,12 @@ vim.pack.add({
 
   -- Effects
   { src = "https://github.com/sphamba/smear-cursor.nvim" },
-  { src = "https://github.com/karb94/neoscroll.nvim" },
+  { src = "https://github.com/folke/todo-comments.nvim" },
 })
 -- }}}
 
 -- PASTEL_SORBET {{{
+-- INFO: Colorscheme
 -- The colorscheme of PureNvim!
 -- Started as a slight variation on the stock theme Sorbet,
 -- went through a TokyoNight Night phase, came out the other way
@@ -74,6 +77,7 @@ local pastel_sorbet = {
 -- }}}
 
 -- OPTIONS {{{
+-- INFO: Options
 -- Sane options and nothing more.
 -- Took heavy inspirations from various configs, so don't be surprise if
 -- you spot your favourite tech influencer settings here!
@@ -107,7 +111,7 @@ o.incsearch = true
 
 -- Appearance {{{
 o.termguicolors = true
-o.signcolumn = "yes"
+o.signcolumn = "yes:2"
 o.colorcolumn = "100"
 o.showmatch = true
 o.matchtime = 3
@@ -191,6 +195,7 @@ o.spelllang = "en_us"
 -- }}}
 
 -- HIGHLIGHTS {{{
+-- INFO: Highlights
 -- This section is pure customization on various aspects of PureNvim.
 -- You could, in theory, disable most of this without breaking anything,
 -- However, being that PureNvim comes with a custom StatusLine and things of such nature,
@@ -327,6 +332,7 @@ set_highlights()
 -- }}}
 
 -- KEYMAPPINGS {{{
+-- INFO: Keymappings
 -- Most of the keymappings leave here. Some leave uner the plugins configurations,
 -- and all (big lie) are listed here: https://github.com/Memnoc/pure-nvim/blob/main/README.md
 g.mapleader = " "
@@ -370,9 +376,8 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 
 -- Better navigation {{{
 map("n", "J", "mzJ`z", { desc = "Join lines (keep cursor)" })
--- Check Neoscroll for this mapping
--- map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
--- map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
+map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
+map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 map("n", "n", "nzzzv", { desc = "Next search (centered)" })
 map("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
 -- }}}
@@ -435,6 +440,7 @@ end, { expr = true })
 -- }}}
 
 -- AUTOCMDS {{{
+-- INFO: Autocommands
 -- These are the ones I use most, but you can disagree and remove/add as you please
 -- and most likely not break anything.
 
@@ -503,6 +509,7 @@ api.nvim_create_autocmd("BufWritePre", {
 -- }}}
 
 -- TERMINAL {{{
+-- INFO: Terminal
 -- I am a big proponent of a central-framed floating terminal, and from the ToggleTerm days,
 -- I map that to <leader>9. You can remap it, of course, and not use the Neovim native terminal.
 -- The customization and aesthetic of the terminal are mostly here.
@@ -575,7 +582,9 @@ map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
 -- }}}
 
 -- TABS {{{
-
+-- INFO: Tabs
+-- Tabs are custom-implemented in PureNvim.
+-- The idea is to have clear indicators, but using very minimal real-estate
 -- Tabline {{{
 function _G.custom_tabline()
   local s = ""
@@ -612,7 +621,9 @@ map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close tab" })
 -- }}}
 
 -- STATUSLINE {{{
-
+-- INFO: Statusline
+-- A custom-made very simple status line with mods, git, file(name, type)
+-- and some bear navigation indicators
 -- Mode tables {{{
 local mode_hl = {
   n = "StatusLineMode",
@@ -668,7 +679,7 @@ api.nvim_create_autocmd({ "BufEnter", "FocusGained", "DirChanged" }, {
 })
 -- }}}
 
--- Statusline function {{{
+-- Statusline settings {{{
 function _G.custom_statusline()
   local mode = api.nvim_get_mode().mode
   local mode_highlight = mode_hl[mode] or "StatusLineMode"
@@ -695,7 +706,8 @@ o.statusline = "%!v:lua.custom_statusline()"
 -- }}}
 
 -- TREESITTER {{{
-
+-- INFO: native Treesitter implemetation
+-- TODO: put a link to the official docs here
 -- Auto-enable {{{
 api.nvim_create_autocmd("FileType", {
   group = augroup,
@@ -731,6 +743,7 @@ end
 -- }}}
 
 -- Parser auto-install {{{
+-- TODO: provide a recipe on how to install parsers
 local parsers_to_install = {
   { lang = "rust",            repo = "https://github.com/tree-sitter/tree-sitter-rust" },
   { lang = "cpp",             repo = "https://github.com/tree-sitter/tree-sitter-cpp" },
@@ -786,6 +799,7 @@ api.nvim_create_autocmd("VimEnter", {
 -- }}}
 
 -- PLUGIN CONFIG {{{
+-- INFO: Plugin Configuration
 -- After you declare your plugins in the PLUGINS section,
 -- you come here to configure them.
 -- We always use a defensive approach, so if you miss a plugin it won't crash your config:
@@ -798,6 +812,36 @@ local ok_mason, mason = pcall(require, "mason")
 if ok_mason then
   mason.setup({
     ui = { border = "rounded" },
+  })
+end
+-- }}}
+
+-- Clangd extensions {{{
+local ok_clangd_ext = pcall(require, "clangd_extensions")
+if ok_clangd_ext then
+  require("clangd_extensions").setup({
+    inlay_hints = {
+      inline = true,
+    },
+    ast = {
+      role_icons = {
+        type = "🄣",
+        declaration = "🄓",
+        expression = "🄔",
+        statement = ";",
+        specifier = "🄢",
+        ["template argument"] = "🆃",
+      },
+      kind_icons = {
+        Compound = "🄲",
+        Recovery = "🅁",
+        TranslationUnit = "🅄",
+        PackExpansion = "🄿",
+        TemplateTypeParm = "🅃",
+        TemplateTemplateParm = "🅃",
+        TemplateParamObject = "🅃",
+      },
+    },
   })
 end
 -- }}}
@@ -988,35 +1032,12 @@ end
 -- }}}
 
 -- mini.animate {{{
+-- PERF: mini.animate
 --  In case you want some nice effects without stressing your CPU
---  that much, use this and disable Neoscroll and Smear
+--  that much, use this and disable Smear
+--  I recommend keeping mini off if you have Smear on
+--  as the UI generally feels faster
 -- require('mini.animate').setup()
--- }}}
-
--- Neoscroll {{{
-local ok_neoscroll, neoscroll = pcall(require, "neoscroll")
-if ok_neoscroll then
-  neoscroll.setup({
-    mappings = {
-      '<C-u>', '<C-d>',
-      '<C-b>', '<C-f>',
-      '<C-y>', '<C-e>',
-      'zt', 'zz', 'zb',
-    },
-    hide_cursor = true,
-    stop_eof = true,
-    respect_scrolloff = false,
-    cursor_scrolls_alone = true,
-    duration_multiplier = 1.0,
-    easing = 'linear',
-    pre_hook = nil,
-    post_hook = nil,
-    performance_mode = false,
-    ignored_events = {
-      'WinScrolled', 'CursorMoved'
-    },
-  })
-end
 -- }}}
 
 -- Smear cursor {{{
@@ -1027,7 +1048,8 @@ if ok_smear then
     trailing_stiffness = 0.6,
     damping = 0.95,
     distance_stop_animating = 0.5,
-    -- time_interval = 7, -- the lower you go, the more CPU intensive it is
+    -- PERF: the lower you go, the more CPU intensive it is
+    time_interval = 8,
 
     smear_insert_mode = true,
     stiffness_insert_mode = 0.5,
@@ -1042,40 +1064,57 @@ if ok_smear then
 end
 -- }}}
 
--- clangd_extensions {{{
-local ok_clangd_ext = pcall(require, "clangd_extensions")
-if ok_clangd_ext then
-  require("clangd_extensions").setup({
-    inlay_hints = {
-      inline = true,
+-- TODO COMMENTS {{{
+-- INFO: TODO Comments
+-- One of my favourite Folke's plugin, with a palette modified to match
+-- Pastel Sorbet. A bit limited when it comes to search fanciness, as it would require
+-- either Telescope and/or Plenary and I did want to keep it minimal.
+-- TODO: explain how to jump with ]t and [t and to use <leader>fg for grepping
+local ok_todo, todo = pcall(require, "todo-comments")
+if ok_todo then
+  todo.setup({
+    signs = true,
+    sign_priority = 20,
+    keywords = {
+      FIX = { icon = "●", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+      TODO = { icon = "●", color = "info" },
+      HACK = { icon = "●", color = "warning" },
+      WARN = { icon = "●", color = "warning", alt = { "WARNING", "XXX" } },
+      PERF = { icon = "●", color = "perf", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+      NOTE = { icon = "●", color = "hint", alt = { "INFO" } },
+      TEST = { icon = "●", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
     },
-    ast = {
-      role_icons = {
-        type = "🄣",
-        declaration = "🄓",
-        expression = "🄔",
-        statement = ";",
-        specifier = "🄢",
-        ["template argument"] = "🆃",
-      },
-      kind_icons = {
-        Compound = "🄲",
-        Recovery = "🅁",
-        TranslationUnit = "🅄",
-        PackExpansion = "🄿",
-        TemplateTypeParm = "🅃",
-        TemplateTemplateParm = "🅃",
-        TemplateParamObject = "🅃",
-      },
+
+    colors = {
+      error = { pastel_sorbet.red_bright },
+      warning = { pastel_sorbet.yellow },
+      info = { pastel_sorbet.blue_bright },
+      hint = { pastel_sorbet.teal },
+      perf = { pastel_sorbet.purple_bright },
+      test = { pastel_sorbet.pink },
+      default = { pastel_sorbet.purple },
+    },
+    highlight = {
+      multiline = true,
+      before = "",
+      keyword = "wide",
+      after = "fg",
+      pattern = [[.*<(KEYWORDS)\s*:]],
+      comments_only = false,
     },
   })
 end
--- }}}
 
+map("n", "]t", function() todo.jump_next() end, { desc = "Next todo" })
+map("n", "[t", function() todo.jump_prev() end, { desc = "Previous todo" })
 -- }}}
 
 -- SNIPPETS {{{
--- Insted of using 
+-- INFO: Snippets
+-- Instead of using a plugin, I have decide to go full native and actually implement
+-- the snippetes I know I use the most.
+-- TODO: make a recipe on how to write a snippet
+-- Snippets repo {{{
 local snippets = {
   c = {
     main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
@@ -1122,6 +1161,9 @@ local snippets = {
     pr = "print($0)",
   },
 }
+-- }}}
+
+-- Fetch snippets {{{
 
 local function get_snippets()
   local ft = vim.bo.filetype
@@ -1138,7 +1180,6 @@ local function expand_snippet_or_fallback()
     local ft_snippets = get_snippets()
     local snippet = ft_snippets[word] or ft_snippets[word .. "_"]
     if snippet then
-      -- Delete the trigger word
       api.nvim_buf_set_text(0,
         api.nvim_win_get_cursor(0)[1] - 1,
         col - #word,
@@ -1159,6 +1200,7 @@ local function expand_snippet_or_fallback()
 end
 
 map("i", "<Tab>", expand_snippet_or_fallback, { desc = "Expand snippet or complete" })
+-- }}}
 
 -- Show available snippets {{{
 local function show_snippets()
@@ -1183,9 +1225,13 @@ map("n", "<leader>ls", show_snippets, { desc = "List snippets" })
 -- }}}
 
 -- LSP {{{
-
+-- INFO: Native LSP set up. I am a big proponent of keeping
+-- all the little helps and nudges off by default, like autcompletion,
+-- signature help, formatting on save etc.
+-- I believe it helps memorizing syntax and understanding your code structure at a glance.
+-- I have included jey-bindings to toggle them on/off as needed.
 -- Autocompletion toggle {{{
-g.lsp_autocompletion = true
+g.lsp_autocompletion = false
 
 local function toggle_autocompletion()
   g.lsp_autocompletion = not g.lsp_autocompletion
@@ -1221,6 +1267,7 @@ api.nvim_create_autocmd("BufWritePre", {
 -- }}}
 
 -- Server configs {{{
+-- INFO: C server
 vim.lsp.config("clangd", {
   cmd = {
     "clangd",
@@ -1234,6 +1281,7 @@ vim.lsp.config("clangd", {
   root_markers = { "compile_commands.json", ".clangd", "Makefile", ".git" },
 })
 
+-- INFO: Rust server
 vim.lsp.config("rust_analyzer", {
   cmd = { "rust-analyzer" },
   filetypes = { "rust" },
@@ -1257,6 +1305,7 @@ vim.lsp.config("rust_analyzer", {
   },
 })
 
+-- INFO: Lua server
 vim.lsp.config("lua_ls", {
   cmd = { "lua-language-server" },
   filetypes = { "lua" },
@@ -1273,35 +1322,6 @@ vim.lsp.config("lua_ls", {
 
 -- Enable servers {{{
 pcall(vim.lsp.enable, { "clangd", "rust_analyzer", "lua_ls" })
--- }}}
-
--- Completion popup border {{{
-vim.api.nvim_create_autocmd("CompleteChanged", {
-  group = augroup,
-  callback = function()
-    local info = vim.fn.complete_info({ "selected", "items" })
-    if info.selected ~= -1 then
-      return
-    end
-  end,
-})
--- }}}
-
--- Diagnostics {{{
-vim.diagnostic.config({
-  virtual_text = { prefix = "●" },
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "●",
-      [vim.diagnostic.severity.WARN] = "●",
-      [vim.diagnostic.severity.INFO] = "●",
-      [vim.diagnostic.severity.HINT] = "●",
-    },
-  },
-  underline = true,
-  update_in_insert = false,
-  float = { border = "rounded" },
-})
 -- }}}
 
 ---- Attach {{{
@@ -1334,6 +1354,38 @@ api.nvim_create_autocmd("LspAttach", {
 })
 -- }}}
 
+-- CODE ACTIONS {{{
+-- INFO: Code Actions and suggestions pop ups are also native to Neovim and
+-- aestehtically customised to Pastel Sorbet.
+-- Completion popup border {{{
+vim.api.nvim_create_autocmd("CompleteChanged", {
+  group = augroup,
+  callback = function()
+    local info = vim.fn.complete_info({ "selected", "items" })
+    if info.selected ~= -1 then
+      return
+    end
+  end,
+})
+-- }}}
+
+-- Diagnostics {{{
+vim.diagnostic.config({
+  virtual_text = { prefix = "●" },
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "●",
+      [vim.diagnostic.severity.WARN] = "●",
+      [vim.diagnostic.severity.INFO] = "●",
+      [vim.diagnostic.severity.HINT] = "●",
+    },
+  },
+  underline = true,
+  update_in_insert = false,
+  float = { border = "rounded" },
+})
+-- }}}
+
 -- Completion and signature auto-trigger {{{
 api.nvim_create_autocmd("TextChangedI", {
   group = augroup,
@@ -1353,4 +1405,6 @@ api.nvim_create_autocmd("TextChangedI", {
     end
   end,
 })
+-- }}}
+
 -- }}}
