@@ -188,10 +188,6 @@ o.wildmenu = true
 o.spelllang = "en_us"
 -- }}}
 
--- Kitty keyboard protocol fix {{{
-vim.g.kitty_fast_forwarded_modifiers = "super"
--- }}}
-
 -- }}}
 
 -- HIGHLIGHTS {{{
@@ -1079,7 +1075,7 @@ end
 -- }}}
 
 -- SNIPPETS {{{
-
+-- Insted of using 
 local snippets = {
   c = {
     main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
