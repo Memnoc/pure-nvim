@@ -19,34 +19,32 @@ vim.pack.add({
 })
 -- }}}
 
--- THEME {{{
-vim.cmd.colorscheme("sorbet")
-
-local sorbet = {
-  bg = "#000000",
-  bg_dark = "#1a1b26",
-  bg_ui = "#363841",
-  fg = "#ffffff",
-  fg_dim = "#dadada",
-  grey = "#707070",
-  grey_light = "#a6a8b1",
-  linenr = "#585858",
-  red = "#d75f5f",
-  red_bright = "#ff5f5f",
-  green = "#87d75f",
-  green_bright = "#87ff5f",
-  yellow = "#d7af5f",
-  yellow_bright = "#ffd75f",
-  blue = "#87afd7",
-  blue_bright = "#87d7ff",
-  purple = "#af87d7",
-  purple_bright = "#d787ff",
-  cyan = "#5fafaf",
-  cyan_bright = "#5fd7d7",
-  pink = "#ff00af",
-  lime = "#afff00",
-  teal = "#5fd7af",
-  amber = "#ffaf00",
+-- PASTEL_SORBET {{{
+local pastel_sorbet = {
+  bg = "#1c1826",
+  bg_dark = "#14111c",
+  bg_ui = "#2e2840",
+  fg = "#e8e4f2",
+  fg_dim = "#cdc8da",
+  grey = "#726a88",
+  grey_light = "#9c94b2",
+  linenr = "#4e4662",
+  red = "#ff8596",
+  red_bright = "#ffa0b0",
+  green = "#6ef298",
+  green_bright = "#52edb8",
+  yellow = "#ffd85c",
+  yellow_bright = "#ffe48a",
+  blue = "#7db8ff",
+  blue_bright = "#a8d0ff",
+  purple = "#c88df7",
+  purple_bright = "#dba8ff",
+  cyan = "#4cf0d8",
+  cyan_bright = "#7af5e4",
+  pink = "#ff8ed0",
+  lime = "#b8f55c",
+  teal = "#3df2c4",
+  amber = "#ffa85c",
 }
 -- }}}
 
@@ -96,6 +94,7 @@ o.concealcursor = ""
 o.synmaxcol = 300
 o.winborder = "rounded"
 o.laststatus = 3
+o.fillchars = "vert: ,horiz: ,horizup: ,horizdown: ,vertleft: ,vertright: ,verthoriz: "
 -- }}}
 
 -- Completion {{{
@@ -152,6 +151,12 @@ o.guicursor = table.concat({
 }, ",")
 -- }}}
 
+-- Completion {{{
+o.completeopt = "menuone,noselect,popup"
+o.pumblend = 0
+o.wildmenu = true
+-- }}}
+
 -- Spell {{{
 o.spelllang = "en_us"
 -- }}}
@@ -164,68 +169,132 @@ vim.g.kitty_fast_forwarded_modifiers = "super"
 
 -- HIGHLIGHTS {{{
 
--- Aesthetic {{{
-api.nvim_set_hl(0, "EndOfBuffer", { fg = sorbet.bg_ui })
-o.fillchars = "vert: ,horiz: ,horizup: ,horizdown: ,vertleft: ,vertright: ,verthoriz: "
-api.nvim_set_hl(0, "WinSeparator", { fg = sorbet.purple })
--- }}}
+local function set_highlights()
+  local hl = api.nvim_set_hl
 
--- MiniJump2d {{{
-api.nvim_set_hl(0, "MiniJump2dSpot", { fg = "#ffffff", bg = "#875faf", bold = true, nocombine = true })
-api.nvim_set_hl(0, "MiniJump2dDim", { fg = "#444444", nocombine = true })
--- }}}
+  -- Treesitter base groups {{{
+  hl(0, "Title", { fg = pastel_sorbet.yellow_bright, bold = true })
+  hl(0, "@markup.heading", { fg = pastel_sorbet.yellow_bright, bold = true })
+  hl(0, "@markup.link", { fg = pastel_sorbet.blue_bright, underline = true })
+  hl(0, "@markup.link.label", { fg = pastel_sorbet.blue })
+  hl(0, "@markup.raw", { fg = pastel_sorbet.green })
+  hl(0, "@markup.raw.block", { fg = pastel_sorbet.green })
+  hl(0, "@markup.italic", { italic = true })
+  hl(0, "@markup.strong", { bold = true })
+  hl(0, "@markup.list", { fg = pastel_sorbet.cyan })
+  -- }}}
 
--- Tabline {{{
-api.nvim_set_hl(0, "TabLine", { fg = sorbet.grey_light, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "TabLineSel", { fg = sorbet.fg, bg = sorbet.bg_ui, bold = true })
-api.nvim_set_hl(0, "TabLineFill", { bg = sorbet.bg_dark })
--- }}}
+  -- Completion popup {{{
+  hl(0, "Pmenu", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg_dark })
+  hl(0, "PmenuSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime, bold = true })
+  hl(0, "PmenuKind", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  hl(0, "PmenuKindSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime })
+  hl(0, "PmenuExtra", { fg = pastel_sorbet.bg_dark, bg = pastel_sorbet.bg_dark })
+  hl(0, "PmenuExtraSel", { fg = pastel_sorbet.lime, bg = pastel_sorbet.lime })
+  hl(0, "PmenuSbar", { bg = pastel_sorbet.bg_dark })
+  hl(0, "PmenuThumb", { bg = pastel_sorbet.purple })
+  hl(0, "PmenuMatch", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true })
+  hl(0, "PmenuMatchSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime, bold = true })
+  -- }}}
 
--- Statusline {{{
-api.nvim_set_hl(0, "StatusLine", { fg = sorbet.fg_dim, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLineNC", { fg = sorbet.grey, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLineBold", { fg = sorbet.fg, bg = sorbet.bg_dark, bold = true })
-api.nvim_set_hl(0, "StatusLineMode", { fg = sorbet.bg, bg = sorbet.purple, bold = true })
-api.nvim_set_hl(0, "StatusLineModeInsert", { fg = sorbet.bg, bg = sorbet.green, bold = true })
-api.nvim_set_hl(0, "StatusLineModeVisual", { fg = sorbet.bg, bg = sorbet.yellow, bold = true })
-api.nvim_set_hl(0, "StatusLineModeReplace", { fg = sorbet.bg, bg = sorbet.red, bold = true })
-api.nvim_set_hl(0, "StatusLineModeCommand", { fg = sorbet.bg, bg = sorbet.amber, bold = true })
-api.nvim_set_hl(0, "StatusLineGit", { fg = sorbet.purple_bright, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLineFile", { fg = sorbet.blue_bright, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLineFileType", { fg = sorbet.teal, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLinePos", { fg = sorbet.grey_light, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "StatusLineSep", { fg = sorbet.purple, bg = sorbet.bg_dark })
--- }}}
+  -- Aesthetic {{{
+  hl(0, "EndOfBuffer", { fg = pastel_sorbet.bg_ui })
+  hl(0, "WinSeparator", { fg = pastel_sorbet.purple })
+  -- }}}
 
--- Float windows {{{
-api.nvim_set_hl(0, "NormalFloat", { fg = sorbet.fg_dim, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "FloatBorder", { fg = sorbet.purple, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "FloatTitle", { fg = sorbet.purple_bright, bg = sorbet.bg_dark, bold = true })
--- }}}
+  -- MiniJump2d {{{
+  hl(0, "MiniJump2dSpot", { fg = "#ffffff", bg = "#875faf", bold = true, nocombine = true })
+  hl(0, "MiniJump2dDim", { fg = "#444444", nocombine = true })
+  -- }}}
 
--- Pmenu {{{
-api.nvim_set_hl(0, "Pmenu", { fg = sorbet.fg_dim, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "PmenuSel", { fg = sorbet.fg, bg = sorbet.bg_ui, bold = true })
-api.nvim_set_hl(0, "PmenuSbar", { bg = sorbet.bg_ui })
-api.nvim_set_hl(0, "PmenuThumb", { bg = sorbet.grey })
--- }}}
+  -- Tabline {{{
+  hl(0, "TabLine", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  hl(0, "TabLineSel",
+    { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true, sp = pastel_sorbet.purple, underline = true })
+  hl(0, "TabLineFill", { bg = pastel_sorbet.bg_dark })
+  -- }}}
 
--- Winbar {{{
-api.nvim_set_hl(0, "WinBar", { fg = sorbet.fg_dim, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "WinBarNC", { fg = sorbet.grey, bg = sorbet.bg_dark })
--- }}}
+  -- Statusline {{{
+  hl(0, "StatusLine", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLineNC", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLineBold", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg_dark, bold = true })
+  hl(0, "StatusLineMode", { fg = pastel_sorbet.bg, bg = pastel_sorbet.purple, bold = true })
+  hl(0, "StatusLineModeInsert", { fg = pastel_sorbet.bg, bg = pastel_sorbet.green, bold = true })
+  hl(0, "StatusLineModeVisual", { fg = pastel_sorbet.bg, bg = pastel_sorbet.yellow, bold = true })
+  hl(0, "StatusLineModeReplace", { fg = pastel_sorbet.bg, bg = pastel_sorbet.red, bold = true })
+  hl(0, "StatusLineModeCommand", { fg = pastel_sorbet.bg, bg = pastel_sorbet.amber, bold = true })
+  hl(0, "StatusLineGit", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLineFile", { fg = pastel_sorbet.blue_bright, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLineFileType", { fg = pastel_sorbet.teal, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLinePos", { fg = pastel_sorbet.grey_light, bg = pastel_sorbet.bg_dark })
+  hl(0, "StatusLineSep", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  -- }}}
 
--- Fold {{{
-api.nvim_set_hl(0, "Folded", { fg = sorbet.grey_light, bg = sorbet.bg_dark })
-api.nvim_set_hl(0, "FoldColumn", { fg = sorbet.linenr, bg = "NONE" })
--- }}}
+  -- Float windows {{{
+  hl(0, "NormalFloat", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  hl(0, "FloatBorder", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  hl(0, "FloatTitle", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true })
+  -- }}}
 
--- Diagnostics {{{
-api.nvim_set_hl(0, "DiagnosticError", { fg = sorbet.red_bright })
-api.nvim_set_hl(0, "DiagnosticWarn", { fg = sorbet.yellow_bright })
-api.nvim_set_hl(0, "DiagnosticInfo", { fg = sorbet.blue_bright })
-api.nvim_set_hl(0, "DiagnosticHint", { fg = sorbet.cyan_bright })
--- }}}
+  -- Winbar {{{
+  hl(0, "WinBar", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  hl(0, "WinBarNC", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  -- }}}
+
+  -- Fold {{{
+  hl(0, "Folded", { fg = pastel_sorbet.grey_light, bg = pastel_sorbet.bg_dark })
+  hl(0, "FoldColumn", { fg = pastel_sorbet.linenr, bg = "NONE" })
+  -- }}}
+
+  -- Diagnostics {{{
+  hl(0, "DiagnosticError", { fg = pastel_sorbet.red_bright })
+  hl(0, "DiagnosticWarn", { fg = pastel_sorbet.yellow_bright })
+  hl(0, "DiagnosticInfo", { fg = pastel_sorbet.blue_bright })
+  hl(0, "DiagnosticHint", { fg = pastel_sorbet.cyan_bright })
+  -- }}}
+
+  -- Syntax overrides {{{
+  hl(0, "Boolean", { fg = pastel_sorbet.amber })
+  hl(0, "Number", { fg = pastel_sorbet.amber })
+  hl(0, "Constant", { fg = pastel_sorbet.amber })
+  hl(0, "String", { fg = pastel_sorbet.teal })
+  hl(0, "Character", { fg = pastel_sorbet.green })
+  hl(0, "Identifier", { fg = pastel_sorbet.fg })
+  hl(0, "Function", { fg = pastel_sorbet.blue_bright })
+  hl(0, "Statement", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Keyword", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Conditional", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Repeat", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Operator", { fg = pastel_sorbet.cyan_bright })
+  hl(0, "Type", { fg = pastel_sorbet.blue_bright })
+  hl(0, "StorageClass", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Structure", { fg = pastel_sorbet.blue_bright })
+  hl(0, "PreProc", { fg = pastel_sorbet.cyan_bright })
+  hl(0, "Include", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Define", { fg = pastel_sorbet.purple_bright })
+  hl(0, "Comment", { fg = pastel_sorbet.grey, italic = true })
+  hl(0, "Special", { fg = pastel_sorbet.cyan_bright })
+  hl(0, "Delimiter", { fg = pastel_sorbet.fg_dim })
+  -- }}}
+
+  -- Base {{{
+  hl(0, "Normal", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg })
+  hl(0, "Visual", { bg = pastel_sorbet.bg_ui })
+  hl(0, "CursorLine", { bg = pastel_sorbet.bg_ui })
+  hl(0, "LineNr", { fg = pastel_sorbet.linenr })
+  hl(0, "CursorLineNr", { fg = pastel_sorbet.yellow, bold = true })
+  hl(0, "Search", { fg = pastel_sorbet.bg, bg = pastel_sorbet.yellow })
+  hl(0, "IncSearch", { fg = pastel_sorbet.bg, bg = pastel_sorbet.amber })
+  hl(0, "MatchParen", { fg = pastel_sorbet.amber, bold = true })
+  hl(0, "NonText", { fg = pastel_sorbet.linenr })
+  hl(0, "SpecialKey", { fg = pastel_sorbet.linenr })
+  hl(0, "SignColumn", { bg = pastel_sorbet.bg })
+  hl(0, "ColorColumn", { bg = pastel_sorbet.bg_ui })
+  hl(0, "VertSplit", { fg = pastel_sorbet.purple })
+  -- }}}
+end
+
+set_highlights()
 
 -- }}}
 
@@ -236,6 +305,7 @@ g.mapleader = " "
 -- General {{{
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<C-s>", "<cmd>write<CR>", { desc = "Save file" })
+map("i", "<C-s>", "<Esc><cmd>write<CR>", { desc = "Save file and exit insert" })
 map("n", "<leader>so", "<cmd>write | source %<CR>", { desc = "Save and source" })
 map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qall!<CR>", { desc = "Force quit all" })
@@ -248,7 +318,6 @@ map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
 map("n", "<leader>/", "<cmd>vsplit<CR>", { desc = "Split vertical" })
 map("n", "<leader>-", "<cmd>split<CR>", { desc = "Split horizontal" })
-map("n", "<leader>c", "<cmd>close<CR>", { desc = "Close split" })
 map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase height" })
 map("n", "<C-Down>", "<cmd>resize -2<CR>", { desc = "Decrease height" })
 map("n", "<C-Left>", "<cmd>vertical resize -2<CR>", { desc = "Decrease width" })
@@ -315,6 +384,22 @@ map("n", "<leader>mc", "<cmd>!gcc -Wall -Wextra -g % -o %:r && ./%:r<CR>", { des
 map("n", "<leader>mr", "<cmd>!cargo run<CR>", { desc = "Cargo run" })
 map("n", "<leader>mt", "<cmd>!cargo test<CR>", { desc = "Cargo test" })
 map("n", "<leader>mb", "<cmd>!cargo build<CR>", { desc = "Cargo build" })
+-- }}}
+
+-- Manual completion trigger {{{
+map("i", "<C-n>", function()
+  vim.lsp.completion.get()
+end, { desc = "Trigger completion" })
+-- }}}
+
+-- Tab to accept completion {{{
+map("i", "<Tab>", function()
+  if vim.fn.pumvisible() == 1 then
+    return "<C-y>"
+  else
+    return "<Tab>"
+  end
+end, { expr = true })
 -- }}}
 
 -- }}}
@@ -551,11 +636,11 @@ api.nvim_create_autocmd({ "BufEnter", "FocusGained", "DirChanged" }, {
 -- Statusline function {{{
 function _G.custom_statusline()
   local mode = api.nvim_get_mode().mode
-  local hl = mode_hl[mode] or "StatusLineMode"
-  local name = mode_names[mode] or " " .. mode .. " "
+  local mode_highlight = mode_hl[mode] or "StatusLineMode"
+  local name = mode_names[mode] or (" " .. mode .. " ")
 
   local parts = {
-    "%#" .. hl .. "#" .. name,
+    "%#" .. mode_highlight .. "#" .. name,
     "%#StatusLineSep#│",
     "%#StatusLineGit#" .. git_branch(),
     "%#StatusLineSep#│",
@@ -586,33 +671,39 @@ api.nvim_create_autocmd("FileType", {
 -- }}}
 
 -- Install helper {{{
-function InstallParser(lang, repo)
-  local cmd = string.format(
-    "cd %s && git clone --depth=1 %s %s && cd %s && cc -shared -o %s.so -fPIC -I./src src/parser.c src/scanner.c 2>/dev/null || cc -shared -o %s.so -fPIC -I./src src/parser.c && mv %s.so %s/parser/",
-    vim.fn.stdpath("data"),
-    repo,
-    "tree-sitter-" .. lang,
-    "tree-sitter-" .. lang,
-    lang,
-    lang,
-    lang,
-    vim.fn.stdpath("data")
+function InstallParser(lang, repo, subpath)
+  local data_dir = vim.fn.stdpath("data")
+  local repo_name = repo:match("([^/]+)$")
+  local clone_dir = data_dir .. "/" .. repo_name
+  local src_dir = subpath and (clone_dir .. "/" .. subpath) or clone_dir
+
+  if vim.fn.isdirectory(clone_dir) == 0 then
+    print("Cloning " .. repo_name .. "...")
+    vim.fn.system({ "git", "clone", "--depth=1", repo, clone_dir })
+  end
+
+  print("Compiling " .. lang .. " parser...")
+  local compile_cmd = string.format(
+    "cd %s && cc -shared -o %s.so -fPIC -I./src src/parser.c src/scanner.c 2>/dev/null || cc -shared -o %s.so -fPIC -I./src src/parser.c",
+    src_dir, lang, lang
   )
-  print("Installing " .. lang .. " parser...")
-  vim.fn.system(cmd)
-  print("Done. Restart Neovim to use the new parser.")
+  vim.fn.system(compile_cmd)
+
+  vim.fn.system({ "mv", src_dir .. "/" .. lang .. ".so", data_dir .. "/parser/" })
+  print("Installed " .. lang .. " parser. Restart Neovim.")
 end
 
 -- }}}
 
 -- Parser auto-install {{{
 local parsers_to_install = {
-  { lang = "rust", repo = "https://github.com/tree-sitter/tree-sitter-rust" },
-  { lang = "cpp",  repo = "https://github.com/tree-sitter/tree-sitter-cpp" },
-  { lang = "toml", repo = "https://github.com/tree-sitter/tree-sitter-toml" },
-  { lang = "json", repo = "https://github.com/tree-sitter/tree-sitter-json" },
-  { lang = "yaml", repo = "https://github.com/tree-sitter-grammars/tree-sitter-yaml" },
-  { lang = "yaml", repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown" },
+  { lang = "rust",            repo = "https://github.com/tree-sitter/tree-sitter-rust" },
+  { lang = "cpp",             repo = "https://github.com/tree-sitter/tree-sitter-cpp" },
+  { lang = "toml",            repo = "https://github.com/tree-sitter/tree-sitter-toml" },
+  { lang = "json",            repo = "https://github.com/tree-sitter/tree-sitter-json" },
+  { lang = "yaml",            repo = "https://github.com/tree-sitter-grammars/tree-sitter-yaml" },
+  { lang = "markdown",        repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown", path = "tree-sitter-markdown" },
+  { lang = "markdown_inline", repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown", path = "tree-sitter-markdown-inline" },
 }
 
 local function parser_installed(lang)
@@ -633,16 +724,8 @@ local function install_missing_parsers()
   end
 
   local choice = vim.fn.confirm(
-    "Install "
-    .. #missing
-    .. " missing treesitter parsers? ("
-    .. table.concat(
-      vim.tbl_map(function(p)
-        return p.lang
-      end, missing),
-      ", "
-    )
-    .. ")",
+    "Install " .. #missing .. " missing treesitter parsers? (" ..
+    table.concat(vim.tbl_map(function(p) return p.lang end, missing), ", ") .. ")",
     "&Yes\n&No",
     1
   )
@@ -652,11 +735,11 @@ local function install_missing_parsers()
   end
 
   for _, p in ipairs(missing) do
-    InstallParser(p.lang, p.repo)
+    InstallParser(p.lang, p.repo, p.path)
   end
 end
 
-vim.api.nvim_create_autocmd("VimEnter", {
+api.nvim_create_autocmd("VimEnter", {
   group = augroup,
   once = true,
   callback = function()
@@ -718,7 +801,7 @@ if ok_extra then
 end
 -- }}}
 
--- Mini.pick helpers (MUST be defined before keymaps that use them) {{{
+-- Mini.pick helpers {{{
 local function pick_with_guard(picker, opts)
   opts = opts or {}
   local cwd = vim.fs.normalize(vim.fn.getcwd())
@@ -729,7 +812,7 @@ local function pick_with_guard(picker, opts)
     return false
   end
 
-  vim.api.nvim_echo({ { " Searching...", "Comment" } }, false, {})
+  api.nvim_echo({ { " Searching...", "Comment" } }, false, {})
 
   vim.schedule(function()
     if picker == "oldfiles" or picker == "diagnostic" then
@@ -763,7 +846,6 @@ local function pick_from_dashboard(picker)
   end
 end
 
--- Picker keymaps (defined here because they need pick_with_guard)
 map("n", "<leader>ff", function() pick_with_guard("files") end, { desc = "Find files" })
 map("n", "<leader>fg", function() pick_with_guard("grep_live") end, { desc = "Live grep" })
 map("n", "<leader>fb", function() pick_with_guard("buffers") end, { desc = "Buffers" })
@@ -797,18 +879,12 @@ end
 -- }}}
 
 -- Mini utilities {{{
-pcall(function()
-  require("mini.pairs").setup()
-end)
-pcall(function()
-  require("mini.surround").setup()
-end)
-pcall(function()
-  require("mini.comment").setup()
-end)
+pcall(function() require("mini.pairs").setup() end)
+pcall(function() require("mini.surround").setup() end)
+pcall(function() require("mini.comment").setup() end)
 -- }}}
 
--- Mini.ai (enhanced text objects) {{{
+-- Mini.ai {{{
 local ok_ai, ai = pcall(require, "mini.ai")
 if ok_ai then
   ai.setup({
@@ -828,7 +904,7 @@ if ok_ai then
 end
 -- }}}
 
--- Mini.diff (git signs in signcolumn) {{{
+-- Mini.diff {{{
 local ok_diff, diff = pcall(require, "mini.diff")
 if ok_diff then
   diff.setup({
@@ -840,31 +916,26 @@ if ok_diff then
 end
 -- }}}
 
--- MiniJump2d (optimized) {{{
+-- MiniJump2d {{{
 local ok_jump2d, MiniJump2d = pcall(require, "mini.jump2d")
 if ok_jump2d then
   MiniJump2d.setup({
     labels = "sdfghjklwertuiocvbnm",
-
     view = {
       dim = true,
       n_steps_ahead = 2,
     },
-
     allowed_windows = {
       current = true,
       not_current = false,
     },
-
     allowed_lines = {
       blank = false,
       fold = false,
     },
-
     mappings = {
       start_jumping = "",
     },
-
     silent = true,
   })
 
@@ -873,6 +944,10 @@ if ok_jump2d then
     { desc = "Jump to character" }
   )
 end
+-- }}}
+
+-- mini.animate {{{
+require('mini.animate').setup()
 -- }}}
 
 -- clangd_extensions {{{
@@ -907,7 +982,151 @@ end
 
 -- }}}
 
+-- SNIPPETS {{{
+
+local snippets = {
+  c = {
+    main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
+    mainv = "int main(void) {\n\t$0\n\treturn 0;\n}",
+    inc = '#include "${1:header}.h"',
+    incs = '#include <${1:stdio}.h>',
+    for_ = "for (int ${1:i} = 0; $1 < ${2:n}; $1++) {\n\t$0\n}",
+    while_ = "while (${1:condition}) {\n\t$0\n}",
+    if_ = "if (${1:condition}) {\n\t$0\n}",
+    ife = "if (${1:condition}) {\n\t$2\n} else {\n\t$0\n}",
+    struct = "typedef struct {\n\t$0\n} ${1:name}_t;",
+    fn = "${1:void} ${2:name}(${3:void}) {\n\t$0\n}",
+    pr = 'printf("${1:%s}\\n"${2:, $3});',
+  },
+  cpp = {
+    main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
+    class = "class ${1:Name} {\npublic:\n\t$1();\n\t~$1();\nprivate:\n\t$0\n};",
+    cout = 'std::cout << ${1:"text"} << std::endl;',
+    cin = "std::cin >> ${1:var};",
+  },
+  rust = {
+    main = "fn main() {\n\t$0\n}",
+    fn_ = "fn ${1:name}(${2}) -> ${3:()} {\n\t$0\n}",
+    pfn = "pub fn ${1:name}(${2}) -> ${3:()} {\n\t$0\n}",
+    test = "#[test]\nfn ${1:test_name}() {\n\t$0\n}",
+    impl = "impl ${1:Type} {\n\t$0\n}",
+    struct = "struct ${1:Name} {\n\t$0\n}",
+    enum_ = "enum ${1:Name} {\n\t$0\n}",
+    let_ = "let ${1:name} = ${0};",
+    letm = "let mut ${1:name} = ${0};",
+    pr = 'println!("${1}");',
+    prd = 'println!("{:?}", ${1});',
+  },
+  lua = {
+    fn_ = "function ${1:name}(${2})\n\t$0\nend",
+    lfn = "local function ${1:name}(${2})\n\t$0\nend",
+    lf = "local ${1:name} = function(${2})\n\t$0\nend",
+    if_ = "if ${1:condition} then\n\t$0\nend",
+    ife = "if ${1:condition} then\n\t$2\nelse\n\t$0\nend",
+    for_ = "for ${1:i} = ${2:1}, ${3:10} do\n\t$0\nend",
+    forp = "for ${1:k}, ${2:v} in pairs(${3:table}) do\n\t$0\nend",
+    fori = "for ${1:i}, ${2:v} in ipairs(${3:table}) do\n\t$0\nend",
+    req = 'local ${1:mod} = require("${2:$1}")',
+    pr = "print($0)",
+  },
+}
+
+local function get_snippets()
+  local ft = vim.bo.filetype
+  return snippets[ft] or {}
+end
+
+local function expand_snippet_or_fallback()
+  local line = api.nvim_get_current_line()
+  local col = api.nvim_win_get_cursor(0)[2]
+  local before = line:sub(1, col)
+  local word = before:match("(%w+)$")
+
+  if word then
+    local ft_snippets = get_snippets()
+    local snippet = ft_snippets[word] or ft_snippets[word .. "_"]
+    if snippet then
+      -- Delete the trigger word
+      api.nvim_buf_set_text(0,
+        api.nvim_win_get_cursor(0)[1] - 1,
+        col - #word,
+        api.nvim_win_get_cursor(0)[1] - 1,
+        col,
+        {}
+      )
+      vim.snippet.expand(snippet)
+      return
+    end
+  end
+
+  if vim.fn.pumvisible() == 1 then
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<C-y>", true, false, true), "n", false)
+  else
+    api.nvim_feedkeys(api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+  end
+end
+
+map("i", "<Tab>", expand_snippet_or_fallback, { desc = "Expand snippet or complete" })
+
+-- Show available snippets {{{
+local function show_snippets()
+  local ft_snippets = get_snippets()
+  if vim.tbl_isempty(ft_snippets) then
+    print("No snippets for filetype: " .. vim.bo.filetype)
+    return
+  end
+
+  local lines = { "Snippets for " .. vim.bo.filetype .. ":" }
+  for trigger, body in pairs(ft_snippets) do
+    local preview = body:gsub("\n", " "):gsub("%s+", " "):sub(1, 50)
+    table.insert(lines, string.format("  %s → %s", trigger:gsub("_$", ""), preview))
+  end
+
+  print(table.concat(lines, "\n"))
+end
+
+map("n", "<leader>ls", show_snippets, { desc = "List snippets" })
+-- }}}
+
+-- }}}
+
 -- LSP {{{
+
+-- Autocompletion toggle {{{
+g.lsp_autocompletion = true
+
+local function toggle_autocompletion()
+  g.lsp_autocompletion = not g.lsp_autocompletion
+  vim.iter(vim.lsp.get_clients({ bufnr = 0 })):each(function(client)
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(g.lsp_autocompletion, client.id, 0, { autotrigger = true })
+    end
+  end)
+  print("Autocompletion: " .. (g.lsp_autocompletion and "ON" or "OFF"))
+end
+
+map("n", "<leader>ta", toggle_autocompletion, { desc = "Toggle autocompletion" })
+-- }}}
+
+-- Format on save toggle {{{
+g.format_on_save = false
+
+local function toggle_format_on_save()
+  g.format_on_save = not g.format_on_save
+  print("Format on save: " .. (g.format_on_save and "ON" or "OFF"))
+end
+
+map("n", "<leader>tf", toggle_format_on_save, { desc = "Toggle format on save" })
+
+api.nvim_create_autocmd("BufWritePre", {
+  group = augroup,
+  callback = function()
+    if g.format_on_save then
+      vim.lsp.buf.format({ async = false, timeout_ms = 1000 })
+    end
+  end,
+})
+-- }}}
 
 -- Server configs {{{
 vim.lsp.config("clangd", {
@@ -964,34 +1183,14 @@ vim.lsp.config("lua_ls", {
 pcall(vim.lsp.enable, { "clangd", "rust_analyzer", "lua_ls" })
 -- }}}
 
--- Attach {{{
-api.nvim_create_autocmd("LspAttach", {
+-- Completion popup border {{{
+vim.api.nvim_create_autocmd("CompleteChanged", {
   group = augroup,
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-
-    if client and client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+  callback = function()
+    local info = vim.fn.complete_info({ "selected", "items" })
+    if info.selected ~= -1 then
+      return
     end
-
-    local opts = { buffer = args.buf }
-    map("n", "gd", vim.lsp.buf.definition, opts)
-    map("n", "gD", vim.lsp.buf.declaration, opts)
-    map("n", "gr", vim.lsp.buf.references, opts)
-    map("n", "gi", vim.lsp.buf.implementation, opts)
-    map("n", "K", vim.lsp.buf.hover, opts)
-    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-    map("n", "<leader>lf", vim.lsp.buf.format, opts)
-    map("n", "[d", vim.diagnostic.goto_prev, opts)
-    map("n", "]d", vim.diagnostic.goto_next, opts)
-    map("n", "<leader>ld", vim.diagnostic.open_float, opts)
-    map("n", "<leader>lt", function()
-      vim.diagnostic.enable(not vim.diagnostic.is_enabled())
-    end, opts)
-    map("n", "<leader>lh", function()
-      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
-    end, opts)
   end,
 })
 -- }}}
@@ -1013,4 +1212,53 @@ vim.diagnostic.config({
 })
 -- }}}
 
+---- Attach {{{
+api.nvim_create_autocmd("LspAttach", {
+  group = augroup,
+  callback = function(args)
+    local client = vim.lsp.get_clients({ id = args.data.client_id })[1]
+    if not client then return end
+
+    if client:supports_method("textDocument/completion") then
+      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+    end
+
+    local opts = { buffer = args.buf }
+    map("n", "gd", vim.lsp.buf.definition, opts)
+    map("n", "gD", vim.lsp.buf.declaration, opts)
+    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    map("n", "<leader>lf", vim.lsp.buf.format, opts)
+    map("n", "[d", function() vim.diagnostic.jump({ count = -1 }) end, opts)
+    map("n", "]d", function() vim.diagnostic.jump({ count = 1 }) end, opts)
+    map("n", "<leader>ld", vim.diagnostic.open_float, opts)
+    map("n", "<leader>lt", function()
+      vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+    end, opts)
+    map("n", "<leader>lh", function()
+      vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
+    end, opts)
+  end,
+})
+-- }}}
+
+-- Completion and signature auto-trigger {{{
+api.nvim_create_autocmd("TextChangedI", {
+  group = augroup,
+  callback = function()
+    local line = api.nvim_get_current_line()
+    local col = api.nvim_win_get_cursor(0)[2]
+    local char = line:sub(col, col)
+    local before = line:sub(1, col)
+
+    if char == "(" or char == "," then
+      vim.lsp.buf.signature_help()
+      return
+    end
+
+    if before:match("%w%w$") and vim.fn.pumvisible() == 0 then
+      vim.lsp.completion.get()
+    end
+  end,
+})
 -- }}}

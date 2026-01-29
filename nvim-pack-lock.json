@@ -1,0 +1,45 @@
+{
+  "plugins": {
+    "clangd_extensions.nvim": {
+      "rev": "e84eaea7ca79610d7047fb1c9d74f15bb1c9db34",
+      "src": "https://github.com/p00f/clangd_extensions.nvim"
+    },
+    "leap.nvim": {
+      "rev": "0033bcaefc3cd7cf5a70b28cd356fe4860e5c074",
+      "src": "https://github.com/ggandor/leap.nvim"
+    },
+    "mason.nvim": {
+      "rev": "44d1e90e1f66e077268191e3ee9d2ac97cc18e65",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "mini.nvim": {
+      "rev": "9b935c218ddba02e5dc75c94f90143bce1f7c646",
+      "src": "https://github.com/echasnovski/mini.nvim"
+    },
+    "nvim-dap": {
+      "rev": "085386b9359ddf8d76ad89b98973b8e332dc5ba3",
+      "src": "https://github.com/mfussenegger/nvim-dap"
+    },
+    "nvim-dap-ui": {
+      "rev": "cf91d5e2d07c72903d052f5207511bf7ecdb7122",
+      "src": "https://github.com/rcarriga/nvim-dap-ui"
+    },
+    "nvim-nio": {
+      "rev": "21f5324bfac14e22ba26553caf69ec76ae8a7662",
+      "src": "https://github.com/nvim-neotest/nvim-nio"
+    },
+    "nvim-treesitter": {
+      "rev": "568ede7e79172a0fe7c9d631454a97ad968deaf2",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter",
+      "version": "'main'"
+    },
+    "nvim-web-devicons": {
+      "rev": "803353450c374192393f5387b6a0176d0972b848",
+      "src": "https://github.com/nvim-tree/nvim-web-devicons"
+    },
+    "oil.nvim": {
+      "rev": "f55b25e493a7df76371cfadd0ded5004cb9cd48a",
+      "src": "https://github.com/stevearc/oil.nvim"
+    }
+  }
+}
