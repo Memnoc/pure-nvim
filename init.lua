@@ -48,7 +48,7 @@ vim.pack.add({
 -- INFO: Colorscheme
 -- The colorscheme of PureNvim!
 -- By default, as a plugin: https://github.com/Memnoc/pastel-sorbet.nvim/blob/main/README.md
--- Refer to the /recipes/pastel-sorbet.lua if you want to see how the whole 
+-- Refer to the /recipes/pastel-sorbet.lua if you want to see how the whole
 -- colorscheme can be included in the configuration.
 -- NOTE: It's necessary to set up colors this way because vim.pack.add is asynchronous. This workaround works on first launch (fallback), then uses the real module once downloaded.
 vim.cmd.colorscheme("pastel_sorbet")
@@ -914,6 +914,7 @@ end
 -- }}}
 
 -- MiniJump2d {{{
+-- INFO: Jump to characters similarly to Leap or Flash
 local ok_jump2d, MiniJump2d = pcall(require, "mini.jump2d")
 if ok_jump2d then
   MiniJump2d.setup({
@@ -1149,7 +1150,7 @@ map("n", "<leader>ls", show_snippets, { desc = "List snippets" })
 -- I believe it helps memorizing syntax and understanding your code structure at a glance.
 -- I have included jey-bindings to toggle them on/off as needed.
 -- Autocompletion toggle {{{
-g.lsp_autocompletion = true
+g.lsp_autocompletion = false
 
 local function toggle_autocompletion()
   g.lsp_autocompletion = not g.lsp_autocompletion
@@ -1252,7 +1253,7 @@ api.nvim_create_autocmd("LspAttach", {
     end
 
     if client:supports_method("textDocument/completion") then
-      vim.lsp.completion.enable(true, client.id, args.buf, { autotrigger = true })
+      vim.lsp.completion.enable(g.lsp_autocompletion, client.id, args.buf, { autotrigger = true })
     end
 
     local opts = { buffer = args.buf }
@@ -1314,6 +1315,8 @@ vim.diagnostic.config({
 api.nvim_create_autocmd("TextChangedI", {
   group = augroup,
   callback = function()
+    if not g.lsp_autocompletion then return end
+
     local line = api.nvim_get_current_line()
     local col = api.nvim_win_get_cursor(0)[2]
     local char = line:sub(col, col)
