@@ -880,9 +880,6 @@ end)
 pcall(function()
   require("mini.surround").setup()
 end)
-pcall(function()
-  require("mini.comment").setup()
-end)
 -- }}}
 
 -- Mini.ai {{{
@@ -1153,7 +1150,7 @@ map("n", "<leader>ls", show_snippets, { desc = "List snippets" })
 -- I believe it helps memorizing syntax and understanding your code structure at a glance.
 -- I have included jey-bindings to toggle them on/off as needed.
 -- Autocompletion toggle {{{
-g.lsp_autocompletion = false
+g.lsp_autocompletion = true
 
 local function toggle_autocompletion()
   g.lsp_autocompletion = not g.lsp_autocompletion
