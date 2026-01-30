@@ -1,19 +1,22 @@
+<div align="center">
+
+<img src="./assets/pure_nvim_logo.png" alt="PureNvim" width="400">
+
 # PureNvim
 
-<p align="center">
-  <img src="./assets/logo_2.png" alt="PureNvim" width="400">
-</p>
+![Version](https://img.shields.io/badge/version-1.0.0-ff8596?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-6ef298?style=flat-square)
+![Flavor](https://img.shields.io/badge/flavor-sweet-ffd85c?style=flat-square)
 
-<p align="center">
-  <strong>Single-file, native-first, systems-focused.</strong>
-</p>
+<br/>
 
-<p align="center">
-  <a href="#installation">Install</a> •
-  <a href="#features">Features</a> •
-  <a href="#keybindings">Keybindings</a> •
-  <a href="#compile--run">Compile</a>
-</p>
+<strong>Single-file, native-first, systems-focused.</strong>
+
+<br/>
+
+[Install](#installation) • [Features](#features) • [Keybindings](#keybindings) • [Compile](#compile--run)
+
+</div>
 
 ---
 
