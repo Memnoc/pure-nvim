@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./assets/pure_nvim_logo.png" alt="PureNvim" width="400">
+<img src="./assets/pure_nvim_banner.png" alt="PureNvim" width="400">
 
 # PureNvim
 
