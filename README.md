@@ -23,7 +23,7 @@
 ![License](https://img.shields.io/badge/license-MIT-6ef298?style=flat-square)
 ![Flavor](https://img.shields.io/badge/flavor-sweet-ffd85c?style=flat-square)
 
----
+</div>
 
 ## Philosophy
 - **Single `init.lua`** — but don't expect a 50 lines config, more like 1k+
