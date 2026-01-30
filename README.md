@@ -1,27 +1,23 @@
-<div align="center">
-
-<img src="./assets/pure_nvim_banner.png" alt="PureNvim" width="400">
-
 # PureNvim
 
-![Version](https://img.shields.io/badge/version-1.0.0-ff8596?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-6ef298?style=flat-square)
-![Flavor](https://img.shields.io/badge/flavor-sweet-ffd85c?style=flat-square)
+<p align="center">
+  <img src="./assets/logo_2.png" alt="PureNvim" width="400">
+</p>
 
-<br/>
+<p align="center">
+  <strong>Single-file, native-first, systems-focused.</strong>
+</p>
 
-<strong>Single-file, native-first, systems-focused.</strong>
-
-<br/>
-
-[Install](#installation) • [Features](#features) • [Keybindings](#keybindings) • [Compile](#compile--run)
-
-</div>
+<p align="center">
+  <a href="#installation">Install</a> •
+  <a href="#features">Features</a> •
+  <a href="#keybindings">Keybindings</a> •
+  <a href="#compile--run">Compile</a>
+</p>
 
 ---
 
 ## Philosophy
-OK
 - **Single `init.lua`** — but don't expect a 50 lines config, more like 1k+
 - **Native Neovim (including nightly APIs 0.12+)** — `vim.lsp`, `vim.treesitter`, `vim.pack`, `snippets`, `autocompletion`
 - **very few external  plugins** — can't promise will remain like that, but so far so good (also I'm counting `mini` as one)
