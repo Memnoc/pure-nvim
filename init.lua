@@ -586,8 +586,7 @@ o.statusline = "%!v:lua.custom_statusline()"
 -- }}}
 
 -- TREESITTER {{{
--- INFO: native Treesitter implemetation
--- TODO: put a link to the official docs here
+-- INFO: Treesitter implementation: https://neovim.io/doc/user/treesitter.html
 -- Auto-enable {{{
 api.nvim_create_autocmd("FileType", {
   group = augroup,
