@@ -1166,6 +1166,7 @@ map("n", "<leader>ta", toggle_autocompletion, { desc = "Toggle autocompletion" }
 -- }}}
 
 -- Format on save toggle {{{
+-- WARN: OFF by default - you can format manually with <leader>lf
 g.format_on_save = false
 
 local function toggle_format_on_save()
