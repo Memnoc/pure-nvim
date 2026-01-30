@@ -70,6 +70,142 @@ You also have full control inside the config in `init.lua` if you want to change
 | teal | `#3df2c4` | Jade | Strings (alternative) |
 | amber | `#ffa85c` | Rich orange | Constants, numbers |
 
+
+## How to reference Pastel Sorbet in the config for full control
+Place this in the HIGHLIGHTS section in `init.lua` and disable
+```lua
+  -- Colorscheme
+  { src = "https://github.com/Memnoc/pastel-sorbet.nvim" },
+```
+```lua
+-- local function set_highlights()
+--  local hl = api.nvim_set_hl
+
+  -- Treesitter base groups {{{
+  -- hl(0, "Title", { fg = pastel_sorbet.yellow_bright, bold = true })
+  -- hl(0, "@markup.heading", { fg = pastel_sorbet.yellow_bright, bold = true })
+  -- hl(0, "@markup.link", { fg = pastel_sorbet.blue_bright, underline = true })
+  -- hl(0, "@markup.link.label", { fg = pastel_sorbet.blue })
+  -- hl(0, "@markup.raw", { fg = pastel_sorbet.green })
+  -- hl(0, "@markup.raw.block", { fg = pastel_sorbet.green })
+  -- hl(0, "@markup.italic", { italic = true })
+  -- hl(0, "@markup.strong", { bold = true })
+  -- hl(0, "@markup.list", { fg = pastel_sorbet.cyan })
+  -- }}}
+
+  -- Completion popup {{{
+  -- hl(0, "Pmenu", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "PmenuSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime, bold = true })
+  -- hl(0, "PmenuKind", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "PmenuKindSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime })
+  -- hl(0, "PmenuExtra", { fg = pastel_sorbet.bg_dark, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "PmenuExtraSel", { fg = pastel_sorbet.lime, bg = pastel_sorbet.lime })
+  -- hl(0, "PmenuSbar", { bg = pastel_sorbet.bg_dark })
+  -- hl(0, "PmenuThumb", { bg = pastel_sorbet.purple })
+  -- hl(0, "PmenuMatch", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true })
+  -- hl(0, "PmenuMatchSel", { fg = pastel_sorbet.bg, bg = pastel_sorbet.lime, bold = true })
+  -- }}}
+
+  -- Aesthetic {{{
+  -- hl(0, "EndOfBuffer", { fg = pastel_sorbet.bg_ui })
+  -- hl(0, "WinSeparator", { fg = pastel_sorbet.purple })
+  -- }}}
+
+  -- MiniJump2d {{{
+  -- hl(0, "MiniJump2dSpot", { fg = "#ffffff", bg = "#875faf", bold = true, nocombine = true })
+  -- hl(0, "MiniJump2dDim", { fg = "#444444", nocombine = true })
+  -- }}}
+
+  -- Tabline {{{
+  -- hl(0, "TabLine", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "TabLineSel",
+  --   { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true, sp = pastel_sorbet.purple, underline = true })
+  -- hl(0, "TabLineFill", { bg = pastel_sorbet.bg_dark })
+  -- }}}
+
+  -- Statusline {{{
+  -- hl(0, "StatusLine", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLineNC", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLineBold", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg_dark, bold = true })
+  -- hl(0, "StatusLineMode", { fg = pastel_sorbet.bg, bg = pastel_sorbet.purple, bold = true })
+  -- hl(0, "StatusLineModeInsert", { fg = pastel_sorbet.bg, bg = pastel_sorbet.green, bold = true })
+  -- hl(0, "StatusLineModeVisual", { fg = pastel_sorbet.bg, bg = pastel_sorbet.yellow, bold = true })
+  -- hl(0, "StatusLineModeReplace", { fg = pastel_sorbet.bg, bg = pastel_sorbet.red, bold = true })
+  -- hl(0, "StatusLineModeCommand", { fg = pastel_sorbet.bg, bg = pastel_sorbet.amber, bold = true })
+  -- hl(0, "StatusLineGit", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLineFile", { fg = pastel_sorbet.blue_bright, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLineFileType", { fg = pastel_sorbet.teal, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLinePos", { fg = pastel_sorbet.grey_light, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "StatusLineSep", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  -- }}}
+
+  -- Float windows {{{
+  -- hl(0, "NormalFloat", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "FloatBorder", { fg = pastel_sorbet.purple, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "FloatTitle", { fg = pastel_sorbet.purple_bright, bg = pastel_sorbet.bg_dark, bold = true })
+  -- }}}
+
+  -- Winbar {{{
+  -- hl(0, "WinBar", { fg = pastel_sorbet.fg_dim, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "WinBarNC", { fg = pastel_sorbet.grey, bg = pastel_sorbet.bg_dark })
+  -- }}}
+
+  -- Fold {{{
+  -- hl(0, "Folded", { fg = pastel_sorbet.grey_light, bg = pastel_sorbet.bg_dark })
+  -- hl(0, "FoldColumn", { fg = pastel_sorbet.linenr, bg = "NONE" })
+  -- }}}
+
+  -- Diagnostics {{{
+  -- hl(0, "DiagnosticError", { fg = pastel_sorbet.red_bright })
+  -- hl(0, "DiagnosticWarn", { fg = pastel_sorbet.yellow_bright })
+  -- hl(0, "DiagnosticInfo", { fg = pastel_sorbet.blue_bright })
+  -- hl(0, "DiagnosticHint", { fg = pastel_sorbet.cyan_bright })
+  -- }}}
+
+  -- Syntax overrides {{{
+  -- hl(0, "Boolean", { fg = pastel_sorbet.amber })
+  -- hl(0, "Number", { fg = pastel_sorbet.amber })
+  -- hl(0, "Constant", { fg = pastel_sorbet.amber })
+  -- hl(0, "String", { fg = pastel_sorbet.teal })
+  -- hl(0, "Character", { fg = pastel_sorbet.green })
+  -- hl(0, "Identifier", { fg = pastel_sorbet.fg })
+  -- hl(0, "Function", { fg = pastel_sorbet.blue_bright })
+  -- hl(0, "Statement", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Keyword", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Conditional", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Repeat", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Operator", { fg = pastel_sorbet.cyan_bright })
+  -- hl(0, "Type", { fg = pastel_sorbet.blue_bright })
+  -- hl(0, "StorageClass", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Structure", { fg = pastel_sorbet.blue_bright })
+  -- hl(0, "PreProc", { fg = pastel_sorbet.cyan_bright })
+  -- hl(0, "Include", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Define", { fg = pastel_sorbet.purple_bright })
+  -- hl(0, "Comment", { fg = pastel_sorbet.grey, italic = true })
+  -- hl(0, "Special", { fg = pastel_sorbet.cyan_bright })
+  -- hl(0, "Delimiter", { fg = pastel_sorbet.fg_dim })
+  -- }}}
+
+  -- Base {{{
+  -- hl(0, "Normal", { fg = pastel_sorbet.fg, bg = pastel_sorbet.bg })
+  -- hl(0, "Visual", { bg = pastel_sorbet.bg_ui })
+  -- hl(0, "CursorLine", { bg = pastel_sorbet.bg_ui })
+  -- hl(0, "LineNr", { fg = pastel_sorbet.linenr })
+  -- hl(0, "CursorLineNr", { fg = pastel_sorbet.yellow, bold = true })
+  -- hl(0, "Search", { fg = pastel_sorbet.bg, bg = pastel_sorbet.yellow })
+  -- hl(0, "IncSearch", { fg = pastel_sorbet.bg, bg = pastel_sorbet.amber })
+  -- hl(0, "MatchParen", { fg = pastel_sorbet.amber, bold = true })
+  -- hl(0, "NonText", { fg = pastel_sorbet.linenr })
+  -- hl(0, "SpecialKey", { fg = pastel_sorbet.linenr })
+  -- hl(0, "SignColumn", { bg = pastel_sorbet.bg })
+  -- hl(0, "ColorColumn", { bg = pastel_sorbet.bg_ui })
+  -- hl(0, "VertSplit", { fg = pastel_sorbet.purple })
+  -- }}}
+-- end
+
+-- set_highlights()
+```
+
 ## Some useful bits
 
 ### Highlight Group Mapping
