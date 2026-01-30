@@ -1,13 +1,13 @@
 -- INTRO {{{
 -- You are reading the main (and only) config file of PureNvim.
 -- PureNvim philosophy is giving the end user full control of the config with little to
--- no abstractions. This is why the Core systems it's almot entirely native Neovim API.
+-- no abstractions. This is why the Core systems it's almost entirely native Neovim API.
 -- You may need to use a nightly version of Neovim. PureNvim was developed under Neovim 0.12.0.
 -- To navigate the (long) configuration, make use of the -- SECTION MARKERS {{{}}}:
 -- / to search
--- C-zR to fold all section markers
+-- Space-zM to fold all section markers
 -- Space to open one section marker
--- C-zM to unfold all section markers
+-- Space-zR to unfold all section markers
 -- }}}
 
 -- GLOBALS {{{
