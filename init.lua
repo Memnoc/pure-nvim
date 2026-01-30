@@ -198,6 +198,11 @@ o.wildmenu = true
 o.spelllang = "en_us"
 -- }}}
 
+-- Search count occurrences
+-- Enables native [1/10] search count message
+-- o.shortmess:remove("S")
+-- }}}
+
 -- }}}
 
 -- HIGHLIGHTS {{{
@@ -559,6 +564,23 @@ api.nvim_create_autocmd({ "BufEnter", "FocusGained", "DirChanged" }, {
 })
 -- }}}
 
+-- STATUSLINE {{{
+-- INFO: Statusline
+-- A custom-made very simple status line with mods, git, file(name, type)
+-- and some bear navigation indicators
+
+-- Search count function {{{
+local function count_search()
+  if vim.v.hlsearch == 1 then
+    local res = vim.fn.searchcount({ maxcount = 999, timeout = 500 })
+    if res.total > 0 then
+      return "%#StatusLineMode# [" .. res.current .. "/" .. res.total .. "] %*"
+    end
+  end
+  return ""
+end
+-- }}}
+
 -- Statusline settings {{{
 function _G.custom_statusline()
   local mode = api.nvim_get_mode().mode
@@ -571,6 +593,7 @@ function _G.custom_statusline()
     "%#StatusLineGit#" .. git_branch(),
     "%#StatusLineSep#│",
     "%#StatusLineFile# %f %m%r",
+    count_search(), -- Calling the custom function here
     "%=",
     "%#StatusLineFileType# %Y ",
     "%#StatusLineSep#│",
