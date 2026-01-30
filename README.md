@@ -17,6 +17,10 @@
 
 ---
 
+![Version](https://img.shields.io/badge/version-1.0.0-ff8596?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-6ef298?style=flat-square)
+![Flavor](https://img.shields.io/badge/flavor-sweet-ffd85c?style=flat-square)
+
 ## Philosophy
 - **Single `init.lua`** — but don't expect a 50 lines config, more like 1k+
 - **Native Neovim (including nightly APIs 0.12+)** — `vim.lsp`, `vim.treesitter`, `vim.pack`, `snippets`, `autocompletion`
