@@ -1,7 +1,7 @@
 # PureNvim
 
 <p align="center">
-  <img src="./assets/logo_2.png" alt="PureNvim" width="400">
+  <img src="./assets/pure_nvim_banner.png" alt="PureNvim" width="400">
 </p>
 
 <p align="center">
