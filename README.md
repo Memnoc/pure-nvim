@@ -21,6 +21,7 @@
 ---
 
 ## Philosophy
+OK
 - **Single `init.lua`** — but don't expect a 50 lines config, more like 1k+
 - **Native Neovim (including nightly APIs 0.12+)** — `vim.lsp`, `vim.treesitter`, `vim.pack`, `snippets`, `autocompletion`
 - **very few external  plugins** — can't promise will remain like that, but so far so good (also I'm counting `mini` as one)
