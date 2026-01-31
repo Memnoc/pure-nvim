@@ -19,7 +19,6 @@
 
 ![Version](https://img.shields.io/badge/version-1.0.0-ff8596?style=flat-square)
 ![License](https://img.shields.io/badge/license-MIT-6ef298?style=flat-square)
-![Flavor](https://img.shields.io/badge/flavor-sweet-ffd85c?style=flat-square)
 
 </div>
 
