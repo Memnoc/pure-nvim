@@ -1,7 +1,5 @@
 <div align="center">
 
-# PureNvim
-
 <p align="center">
   <img src="./assets/pure_nvim_banner.png" alt="PureNvim" width="400">
 </p>
