@@ -11,7 +11,7 @@
 <p align="center">
   <a href="#installation">Install</a> •
   <a href="#features">Features</a> •
-  <a href="#keybindings">Keymappings</a> •
+  <a href="#keymappings">Keymappings</a> •
 </p>
 
 ---
