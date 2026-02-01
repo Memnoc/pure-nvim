@@ -18,6 +18,9 @@ local o = vim.opt
 local g = vim.g
 local api = vim.api
 local map = vim.keymap.set
+-- DOCS: AUGROUPS
+-- https://learnvimscriptthehardway.stevelosh.com/chapters/14.html
+-- TL:DR augroup make it easy to clear many autocmd's at once and also provide away to re-:source without duplicating autocmd's
 local augroup = api.nvim_create_augroup("UserConfig", {})
 -- }}}
 
@@ -30,7 +33,7 @@ vim.pack.add({
   { src = "https://github.com/echasnovski/mini.nvim" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
-  { src = "https://github.com/nvim-treesitter/nvim-treesitter" }, -- Add this
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" },
 
   -- LSP
   { src = "https://github.com/mason-org/mason.nvim" },
@@ -51,7 +54,7 @@ vim.pack.add({
 -- By default, as a plugin: https://github.com/Memnoc/pastel-sorbet.nvim/blob/main/README.md
 -- Refer to the /recipes/pastel-sorbet.lua if you want to see how the whole
 -- colorscheme can be included in the configuration.
--- NOTE: It's necessary to set up colors this way because vim.pack.add is asynchronous. This workaround works on first launch (fallback), then uses the real module once downloaded.
+-- WARN: It's necessary to set up colors this way because vim.pack.add is asynchronous. This workaround works on first launch (fallback), then uses the real module once downloaded.
 vim.cmd.colorscheme("pastel_sorbet")
 local ok, c = pcall(require, "pastel_sorbet.palette")
 if not ok then
@@ -85,9 +88,8 @@ end
 
 -- OPTIONS {{{
 -- INFO: Options
--- Sane options and nothing more.
--- Took heavy inspirations from various configs, so don't be surprise if
--- you spot your favourite tech influencer settings here!
+-- Some sane defaults.
+-- Took heavy inspirations from various configs over the years
 -- Line numbers {{{
 o.number = true
 o.relativenumber = true
@@ -201,6 +203,7 @@ o.spelllang = "en_us"
 
 -- Search count occurrences
 -- Enables native [1/10] search count message
+-- Redundant if you use the custom statusline
 -- o.shortmess:remove("S")
 -- }}}
 
@@ -227,7 +230,10 @@ g.mapleader = " "
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<C-s>", "<cmd>write<CR>", { desc = "Save file" })
 map("i", "<C-s>", "<Esc><cmd>write<CR>", { desc = "Save file and exit insert" })
-map("n", "<leader>so", "<cmd>write | source %<CR>", { desc = "Save and source" })
+map("n", "<leader>b", function()
+  vim.cmd("write | source%")
+  print("File sourced")
+  end, {desc = "Save and source" })
 map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qall!<CR>", { desc = "Force quit all" })
 -- }}}
@@ -314,6 +320,10 @@ end, { desc = "Trigger completion" })
 -- }}}
 
 -- Tab to accept completion {{{
+-- DOCS: PUMVISIBLE
+--  Returns non-zero when the popup menu is visible, zero otherwise.
+--  See |ins-completion-menu|.
+--  This can be used to avoid some things that would remove the popup menu.
 map("i", "<Tab>", function()
   if vim.fn.pumvisible() == 1 then
     return "<C-y>"
@@ -653,7 +663,6 @@ api.nvim_create_autocmd("VimEnter", {
   once = true,
   callback = function()
     vim.defer_fn(function()
-
       if vim.fn.executable("tree-sitter") ~= 1 then
         vim.notify(
           "Treesitter: 'tree-sitter' CLI not found. Install it to enable parser compilation:\n"
@@ -664,7 +673,6 @@ api.nvim_create_autocmd("VimEnter", {
         return
       end
 
-      -- Check if nvim-treesitter is available
       local ok, ts = pcall(require, "nvim-treesitter")
       if not ok then
         return
@@ -996,6 +1004,7 @@ if ok_todo then
       PERF = { icon = "●", color = "perf", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
       NOTE = { icon = "●", color = "hint", alt = { "INFO" } },
       TEST = { icon = "●", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+      DOCS = { icon = "●", color = "docs", alt = { "TESTING", "PASSED", "FAILED" } },
     },
 
     colors = {
@@ -1005,6 +1014,7 @@ if ok_todo then
       hint = { c.teal },
       perf = { c.purple_bright },
       test = { c.pink },
+      docs = { c.purple_bright },
       default = { c.purple },
     },
     highlight = {
@@ -1251,6 +1261,8 @@ api.nvim_create_autocmd("LspAttach", {
       return
     end
 
+    -- DOCS: COMPLETION
+    -- https://neovim.io/doc/user/lsp.html#_lua-module:-vim.lsp.completion
     if client:supports_method("textDocument/completion") then
       vim.lsp.completion.enable(g.lsp_autocompletion, client.id, args.buf, { autotrigger = true })
     end
@@ -1269,7 +1281,9 @@ api.nvim_create_autocmd("LspAttach", {
     end, opts)
     map("n", "<leader>ld", vim.diagnostic.open_float, opts)
     map("n", "<leader>lt", function()
-      vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+      local enabled = not vim.diagnostic.is_enabled()
+      vim.diagnostic.enable(enabled)
+        print("Diagnostics " .. (enabled and "enabled" or "disabled"))
     end, opts)
     map("n", "<leader>lh", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
