@@ -32,7 +32,7 @@
 I was tired (not really) and had some (lot) of time on my hands to do this, and actually learned a bit about
 Neovim, a fact I never failt to brag about using with my colleagues and friends.
 
-This is your AI elevator pitch:
+**This is your AI elevator pitch:**
 
 A minimal, native Neovim configuration for systems programming in C, C++, and Rust.
 Built for Neovim 0.12+ with a focus on low-level development workflows.
@@ -57,6 +57,14 @@ Aside from being on the nightly (use [Bob](https://github.com/MordechaiHadad/bob
 - Neovim 0.12+ (nightly)
 - Git
 - C compiler (gcc/clang)
+- [tree-sitter CLI](https://github.com/tree-sitter/tree-sitter) — required for parser compilation
+```bash
+  # macOS
+  brew install tree-sitter
+  
+  # cross-platform (requires Rust)
+  cargo install tree-sitter-cli
+```
 - [ripgrep](https://github.com/BurntSushi/ripgrep) for live grep
 - [fd](https://github.com/sharkdp/fd) for file finding
 
@@ -64,7 +72,6 @@ Aside from being on the nightly (use [Bob](https://github.com/MordechaiHadad/bob
 
 - [bob](https://github.com/MordechaiHadad/bob) Neovim version manager
 - Nerd Font for icons
-
 ## Installation
 
 Thanks to however wrote the function to switch between neovim versions using the global variable, you rock!
@@ -113,7 +120,7 @@ nvims
 
 On first launch:
 1. Plugins install automatically via `vim.pack`
-2. You'll be prompted to install missing treesitter parsers
+2. Treesitter parsers install automatically (requires `tree-sitter` CLI)
 3. Open `:Mason` to install LSP servers
 
 Remember: Treesitter -> parsers - Mason -> LSP servers

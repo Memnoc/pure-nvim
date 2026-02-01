@@ -30,6 +30,7 @@ vim.pack.add({
   { src = "https://github.com/echasnovski/mini.nvim" },
   { src = "https://github.com/stevearc/oil.nvim" },
   { src = "https://github.com/nvim-tree/nvim-web-devicons" },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter" }, -- Add this
 
   -- LSP
   { src = "https://github.com/mason-org/mason.nvim" },
@@ -609,8 +610,35 @@ o.statusline = "%!v:lua.custom_statusline()"
 -- }}}
 
 -- TREESITTER {{{
--- INFO: Treesitter implementation: https://neovim.io/doc/user/treesitter.html
--- Auto-enable {{{
+-- INFO: Treesitter implementation
+-- REQUIRES: tree-sitter CLI for parser compilation
+--   brew install tree-sitter  (macOS)
+--   cargo install tree-sitter-cli  (cross-platform)
+-- Docs: https://github.com/nvim-treesitter/nvim-treesitter
+
+-- Parsers to install {{{
+-- INFO: parsers implementation
+-- Edit this list to add/remove languages for your workflow.
+-- On first launch, missing parsers install automatically in the background.
+-- Manual commands:
+--   :TSInstall <lang>    - Install a parser
+--   :TSUninstall <lang>  - Remove a parser
+--   :TSUpdate            - Update all parsers
+--   :TSLog               - Show install log (useful for debugging)
+local treesitter_parsers = {
+  "c",
+  "lua",
+  "rust",
+  "cpp",
+  "toml",
+  "json",
+  "yaml",
+  "markdown",
+  "markdown_inline",
+}
+-- }}}
+
+-- Auto-enable highlighting {{{
 api.nvim_create_autocmd("FileType", {
   group = augroup,
   callback = function()
@@ -619,99 +647,46 @@ api.nvim_create_autocmd("FileType", {
 })
 -- }}}
 
--- Install helper {{{
-function InstallParser(lang, repo, subpath)
-  local data_dir = vim.fn.stdpath("data")
-  local repo_name = repo:match("([^/]+)$")
-  local clone_dir = data_dir .. "/" .. repo_name
-  local src_dir = subpath and (clone_dir .. "/" .. subpath) or clone_dir
-
-  if vim.fn.isdirectory(clone_dir) == 0 then
-    print("Cloning " .. repo_name .. "...")
-    vim.fn.system({ "git", "clone", "--depth=1", repo, clone_dir })
-  end
-
-  print("Compiling " .. lang .. " parser...")
-  local compile_cmd = string.format(
-    "cd %s && cc -shared -o %s.so -fPIC -I./src src/parser.c src/scanner.c 2>/dev/null || cc -shared -o %s.so -fPIC -I./src src/parser.c",
-    src_dir,
-    lang,
-    lang
-  )
-  vim.fn.system(compile_cmd)
-
-  vim.fn.system({ "mv", src_dir .. "/" .. lang .. ".so", data_dir .. "/parser/" })
-  print("Installed " .. lang .. " parser. Restart Neovim.")
-end
-
--- }}}
-
--- Parser auto-install {{{
--- TODO: provide a recipe on how to install parsers
-local parsers_to_install = {
-  { lang = "rust", repo = "https://github.com/tree-sitter/tree-sitter-rust" },
-  { lang = "cpp",  repo = "https://github.com/tree-sitter/tree-sitter-cpp" },
-  { lang = "toml", repo = "https://github.com/tree-sitter/tree-sitter-toml" },
-  { lang = "json", repo = "https://github.com/tree-sitter/tree-sitter-json" },
-  { lang = "yaml", repo = "https://github.com/tree-sitter-grammars/tree-sitter-yaml" },
-  {
-    lang = "markdown",
-    repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown",
-    path = "tree-sitter-markdown",
-  },
-  {
-    lang = "markdown_inline",
-    repo = "https://github.com/tree-sitter-grammars/tree-sitter-markdown",
-    path = "tree-sitter-markdown-inline",
-  },
-}
-
-local function parser_installed(lang)
-  local parser_path = vim.fn.stdpath("data") .. "/parser/" .. lang .. ".so"
-  return vim.fn.filereadable(parser_path) == 1
-end
-
-local function install_missing_parsers()
-  local missing = {}
-  for _, p in ipairs(parsers_to_install) do
-    if not parser_installed(p.lang) then
-      table.insert(missing, p)
-    end
-  end
-
-  if #missing == 0 then
-    return
-  end
-
-  local choice = vim.fn.confirm(
-    "Install "
-    .. #missing
-    .. " missing treesitter parsers? ("
-    .. table.concat(
-      vim.tbl_map(function(p)
-        return p.lang
-      end, missing),
-      ", "
-    )
-    .. ")",
-    "&Yes\n&No",
-    1
-  )
-
-  if choice ~= 1 then
-    return
-  end
-
-  for _, p in ipairs(missing) do
-    InstallParser(p.lang, p.repo, p.path)
-  end
-end
-
+-- Auto-install missing parsers {{{
 api.nvim_create_autocmd("VimEnter", {
   group = augroup,
   once = true,
   callback = function()
-    vim.defer_fn(install_missing_parsers, 100)
+    vim.defer_fn(function()
+
+      if vim.fn.executable("tree-sitter") ~= 1 then
+        vim.notify(
+          "Treesitter: 'tree-sitter' CLI not found. Install it to enable parser compilation:\n"
+          .. "  brew install tree-sitter  (macOS)\n"
+          .. "  cargo install tree-sitter-cli  (cross-platform)",
+          vim.log.levels.WARN
+        )
+        return
+      end
+
+      -- Check if nvim-treesitter is available
+      local ok, ts = pcall(require, "nvim-treesitter")
+      if not ok then
+        return
+      end
+
+      local installed = ts.get_installed()
+      local missing = vim.tbl_filter(function(lang)
+        return not vim.tbl_contains(installed, lang)
+      end, treesitter_parsers)
+
+      if #missing == 0 then
+        return
+      end
+
+      vim.notify(
+        "Treesitter: installing parsers (" .. table.concat(missing, ", ") .. ")",
+        vim.log.levels.INFO
+      )
+      for _, lang in ipairs(missing) do
+        ts.install(lang)
+      end
+    end, 200)
   end,
 })
 -- }}}
