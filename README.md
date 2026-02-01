@@ -11,8 +11,7 @@
 <p align="center">
   <a href="#installation">Install</a> •
   <a href="#features">Features</a> •
-  <a href="#keybindings">Keybindings</a> •
-  <a href="#compile--run">Compile</a>
+  <a href="#keybindings">Keymappings</a> •
 </p>
 
 ---
@@ -72,6 +71,7 @@ Aside from being on the nightly (use [Bob](https://github.com/MordechaiHadad/bob
 
 - [bob](https://github.com/MordechaiHadad/bob) Neovim version manager
 - Nerd Font for icons
+
 ## Installation
 
 Thanks to however wrote the function to switch between neovim versions using the global variable, you rock!
@@ -135,7 +135,7 @@ Open `:Mason` and install (more than this if you need other LSPs):
 | `rust-analyzer` | LSP | Rust |
 | `lua-language-server` | LSP | Lua |
 
-# Configuration & Architecture
+# Features
 
 PureNvim is designed to prioritize native Neovim features over external abstractions. This document details how the configuration leverages the core API and where external plugins are used strictly as enhancements.
 
