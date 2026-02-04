@@ -86,6 +86,8 @@ if not ok then
   }
 end
 
+
+
 -- OPTIONS {{{
 -- INFO: Options
 -- Some sane defaults.
@@ -106,7 +108,7 @@ o.autoindent = true
 -- }}}
 
 -- Wrapping and scroll {{{
-o.wrap = true
+-- o.wrap = true
 o.scrolloff = 10
 o.sidescrolloff = 8
 -- }}}
@@ -134,7 +136,19 @@ o.concealcursor = ""
 o.synmaxcol = 300
 o.winborder = "rounded"
 o.laststatus = 3
-o.fillchars = "vert: ,horiz: ,horizup: ,horizdown: ,vertleft: ,vertright: ,verthoriz: "
+-- Set thick character set for borders
+vim.opt.fillchars = {
+  horiz = '━',
+  horizup = '┻',
+  horizdown = '┳',
+  vert = '┃',
+  vertleft = '┫',
+  vertright = '┣',
+  verthoriz = '╋',
+}
+api.nvim_set_hl(0, "WinSeparator", {
+  fg = c.purple_bright,
+})
 -- }}}
 
 -- Completion {{{
@@ -233,7 +247,7 @@ map("i", "<C-s>", "<Esc><cmd>write<CR>", { desc = "Save file and exit insert" })
 map("n", "<leader>b", function()
   vim.cmd("write | source%")
   print("File sourced")
-  end, {desc = "Save and source" })
+end, { desc = "Save and source" })
 map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qall!<CR>", { desc = "Force quit all" })
 -- }}}
@@ -243,6 +257,7 @@ map("n", "<C-h>", "<C-w>h", { desc = "Move to left window" })
 map("n", "<C-j>", "<C-w>j", { desc = "Move to lower window" })
 map("n", "<C-k>", "<C-w>k", { desc = "Move to upper window" })
 map("n", "<C-l>", "<C-w>l", { desc = "Move to right window" })
+map("n", "<leader>wd", "<cmd>close<CR>", { desc = "Delete window" })
 map("n", "<leader>/", "<cmd>vsplit<CR>", { desc = "Split vertical" })
 map("n", "<leader>-", "<cmd>split<CR>", { desc = "Split horizontal" })
 map("n", "<C-Up>", "<cmd>resize +2<CR>", { desc = "Increase height" })
@@ -256,9 +271,24 @@ map("v", "<A-k>", ":m '<-2<CR>gv=gv", { desc = "Move selection up" })
 -- }}}
 
 -- Buffers {{{
+map("n", "<leader>bn", "<cmd>enew<CR>", { desc = "Open new buffer" })
 map("n", "<leader>bd", "<cmd>bdelete<CR>", { desc = "Delete buffer" })
-map("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
-map("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+map("n", "<S-l>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
+-- }}}
+
+-- Toggles {{{
+map("n", "<leader>uw", function()
+  vim.opt.wrap = not vim.opt.wrap
+  print("Wrap: " .. (vim.opt.wrap and "ON" or "OFF"))
+end, { desc = "Toggle wrap" })
+map("n", "<leader>uL", "<cmd>set relativenumber!<CR>", { desc = "Toggle relative numbers" })
+map("n", "<leader>uw", "<cmd>set wrap!<CR>", { desc = "Toggle wrap" })
+map("n", "<leader>uL", "<cmd>set relativenumber!<CR>", { desc = "Toggle relative number" })
+-- }}}
+
+-- Treesitter {{{
+map("n", "<leader>ui", function() vim.show_pos() end, { desc = "Inspect position" })
+map("n", "<leader>uI", "<cmd>InspectTree<CR>", { desc = "Inspect treesitter tree" })
 -- }}}
 
 -- Move lines {{{
@@ -272,6 +302,12 @@ map("n", "<C-d>", "<C-d>zz", { desc = "Half page down (centered)" })
 map("n", "<C-u>", "<C-u>zz", { desc = "Half page up (centered)" })
 map("n", "n", "nzzzv", { desc = "Next search (centered)" })
 map("n", "N", "Nzzzv", { desc = "Prev search (centered)" })
+
+-- Quickfix/Location
+map("n", "[q", "<cmd>cprevious<CR>", { desc = "Prev quickfix" })
+map("n", "]q", "<cmd>cnext<CR>", { desc = "Next quickfix" })
+map("n", "<leader>xq", "<cmd>copen<CR>", { desc = "Quickfix list" })
+map("n", "<leader>xl", "<cmd>lopen<CR>", { desc = "Location list" })
 -- }}}
 
 -- Visual mode {{{
@@ -281,8 +317,9 @@ map("v", "p", '"_dP', { desc = "Paste without yank" })
 -- }}}
 
 -- Comments {{{
-map("n", "<leader>c", "gcc", { remap = true, desc = "Toggle comment" })
-map("v", "<leader>c", "gc", { remap = true, desc = "Toggle comment" })
+-- I am a heavy user of gcc so I disable this in my personal workflow
+-- map("n", "<leader>c", "gcc", { remap = true, desc = "Toggle comment" })
+-- map("v", "<leader>c", "gc", { remap = true, desc = "Toggle comment" })
 -- }}}
 
 -- Files {{{
@@ -512,6 +549,7 @@ map("n", "<Tab>", "<cmd>tabnext<CR>", { desc = "Next tab" })
 map("n", "<S-Tab>", "<cmd>tabprevious<CR>", { desc = "Previous tab" })
 map("n", "<leader>tn", "<cmd>tabnew<CR>", { desc = "New tab" })
 map("n", "<leader>tx", "<cmd>tabclose<CR>", { desc = "Close tab" })
+map("n", "<leader>to", "<cmd>tabonly<CR>", { desc = "Close other tabs" })
 -- }}}
 
 -- }}}
@@ -995,16 +1033,18 @@ local ok_todo, todo = pcall(require, "todo-comments")
 if ok_todo then
   todo.setup({
     signs = true,
-    sign_priority = 20,
+    -- Big help from LazyVim icons and Folke's TODO
+    -- https://www.lazyvim.org/configuration
+    -- https://github.com/folke/todo-comments.nvim/blob/main/lua/todo-comments/config.lua
     keywords = {
-      FIX = { icon = "●", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
-      TODO = { icon = "●", color = "info" },
-      HACK = { icon = "●", color = "warning" },
-      WARN = { icon = "●", color = "warning", alt = { "WARNING", "XXX" } },
-      PERF = { icon = "●", color = "perf", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
-      NOTE = { icon = "●", color = "hint", alt = { "INFO" } },
-      TEST = { icon = "●", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
-      DOCS = { icon = "●", color = "docs", alt = { "TESTING", "PASSED", "FAILED" } },
+      FIX = { icon = " ", color = "error", alt = { "FIXME", "BUG", "FIXIT", "ISSUE" } },
+      TODO = { icon = " ", color = "info" },
+      HACK = { icon = "󰏚 ", color = "warning" },
+      WARN = { icon = " ", color = "warning", alt = { "WARNING", "XXX" } },
+      PERF = { icon = " ", color = "perf", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE" } },
+      NOTE = { icon = " ", color = "hint", alt = { "INFO" } },
+      TEST = { icon = "⏲ ", color = "test", alt = { "TESTING", "PASSED", "FAILED" } },
+      DOCS = { icon = " ", color = "docs", alt = { "TESTING", "PASSED", "FAILED" } },
     },
 
     colors = {
@@ -1270,27 +1310,45 @@ api.nvim_create_autocmd("LspAttach", {
     local opts = { buffer = args.buf }
     map("n", "gd", vim.lsp.buf.definition, opts)
     map("n", "gD", vim.lsp.buf.declaration, opts)
-    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
-    map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-    map("n", "<leader>lf", vim.lsp.buf.format, opts)
+    map("n", "K", vim.lsp.buf.hover, opts)
     map("n", "[d", function()
       vim.diagnostic.jump({ count = -1 })
     end, opts)
     map("n", "]d", function()
       vim.diagnostic.jump({ count = 1 })
     end, opts)
+    map("n", "<leader>rn", vim.lsp.buf.rename, opts)
+    map("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    map("n", "<leader>lf", vim.lsp.buf.format, opts)
+    map("n", "<leader>sr", vim.lsp.buf.references, opts)
+    map("n", "<leader>sh", vim.lsp.buf.signature_help, opts)
+
+    -- DIAGNOSTICS
+    map("i", "<C-k>", vim.lsp.buf.signature_help, opts)
     map("n", "<leader>ld", vim.diagnostic.open_float, opts)
     map("n", "<leader>lt", function()
       local enabled = not vim.diagnostic.is_enabled()
       vim.diagnostic.enable(enabled)
-        print("Diagnostics " .. (enabled and "enabled" or "disabled"))
+      print("Diagnostics " .. (enabled and "enabled" or "disabled"))
     end, opts)
     map("n", "<leader>lh", function()
       vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = args.buf }), { bufnr = args.buf })
     end, opts)
   end,
 })
--- }}}
+
+-- All diagnostics to quickfix
+map("n", "<leader>xx", function()
+  vim.diagnostic.setqflist()
+  vim.cmd("copen")
+end, { desc = "All diagnostics (quickfix)" })
+
+-- Buffer diagnostics only
+map("n", "<leader>xX", function()
+  vim.diagnostic.setloclist()
+  vim.cmd("lopen")
+end, { desc = "Buffer diagnostics (loclist)" })
+--}}}
 
 -- CODE ACTIONS {{{
 -- INFO: Code Actions and suggestions pop ups are also native to Neovim and
@@ -1303,19 +1361,25 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
     if info.selected ~= -1 then
       return
     end
-  end,
+  end
 })
+-- }}}
+-- LazyVim symbols {{{
+-- Error = " ",
+-- Warn  = " ",
+-- Hint  = " ",
+-- Info  = " ",
 -- }}}
 
 -- Diagnostics {{{
 vim.diagnostic.config({
-  virtual_text = { prefix = "●" },
+  virtual_text = { prefix = " " },
   signs = {
     text = {
-      [vim.diagnostic.severity.ERROR] = "●",
-      [vim.diagnostic.severity.WARN] = "●",
-      [vim.diagnostic.severity.INFO] = "●",
-      [vim.diagnostic.severity.HINT] = "●",
+      [vim.diagnostic.severity.ERROR] = " ",
+      [vim.diagnostic.severity.WARN] = " ",
+      [vim.diagnostic.severity.INFO] = " ",
+      [vim.diagnostic.severity.HINT] = "",
     },
   },
   underline = true,
