@@ -1117,12 +1117,31 @@ map("n", "[t", function()
 end, { desc = "Previous todo" })
 -- }}}
 
--- SNIPPETS {{{
--- INFO: Snippets
--- Instead of using a plugin, I have decide to go full native and actually implement
--- the snippetes I know I use the most.
--- TODO: make a recipe on how to write a snippet
--- Snippets repo {{{
+-- CUSTOM SNIPPETS {{{
+-- INFO: Native snippet system using vim.snippet (Neovim 0.10+)
+--
+-- DOCS: Usage
+--   Type trigger word, press <Tab> to expand
+--   <Tab> also accepts completion popup if visible
+--   <leader>ls lists available snippets for current filetype
+--
+-- DOCS: Snippet Syntax (LSP format):
+--   $0           Final cursor position
+--   ${1:text}    Tabstop 1 with placeholder "text"
+--   $1           Reference to tabstop 1 (mirrors input)
+--   \n           Newline
+--   \t           Tab (follows your indent settings)
+--
+-- DOCS: Adding Snippets
+--   1. Find or create filetype key: snippets.yourft = {}
+--   2. Add trigger = "body" pair
+--   3. Use ["keyword"] bracket notation for Lua reserved words (if, for, while, etc.)
+--
+-- DOCS: Example:
+--   snippets.python = {
+--     ["def"] = "def ${1:name}(${2:args}):\n\t$0",
+--     ["if"] = "if ${1:condition}:\n\t$0",
+
 local snippets = {
   c = {
     main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
@@ -1171,63 +1190,38 @@ local snippets = {
 }
 -- }}}
 
--- Fetch snippets {{{
-local function get_snippets()
-  local ft = vim.bo.filetype
-  return snippets[ft] or {}
-end
-
-local function expand_snippet_or_fallback()
-  local line = api.nvim_get_current_line()
-  local col = api.nvim_win_get_cursor(0)[2]
-  local before = line:sub(1, col)
-  local word = before:match("(%w+)$")
-
-  if word then
-    local ft_snippets = get_snippets()
-    local snippet = ft_snippets[word] or ft_snippets[word .. "_"]
-    if snippet then
-      api.nvim_buf_set_text(
-        0,
-        api.nvim_win_get_cursor(0)[1] - 1,
-        col - #word,
-        api.nvim_win_get_cursor(0)[1] - 1,
-        col,
-        {}
-      )
-      vim.snippet.expand(snippet)
-      return
-    end
-  end
-
+map("i", "<Tab>", function()
   if vim.fn.pumvisible() == 1 then
     api.nvim_feedkeys(api.nvim_replace_termcodes("<C-y>", true, false, true), "n", false)
-  else
-    api.nvim_feedkeys(api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
-  end
-end
-
-map("i", "<Tab>", expand_snippet_or_fallback, { desc = "Expand snippet or complete" })
--- }}}
-
--- Show available snippets {{{
-local function show_snippets()
-  local ft_snippets = get_snippets()
-  if vim.tbl_isempty(ft_snippets) then
-    print("No snippets for filetype: " .. vim.bo.filetype)
     return
   end
 
-  local lines = { "Snippets for " .. vim.bo.filetype .. ":" }
-  for trigger, body in pairs(ft_snippets) do
-    local preview = body:gsub("\n", " "):gsub("%s+", " "):sub(1, 50)
-    table.insert(lines, string.format("  %s → %s", trigger:gsub("_$", ""), preview))
+  local col = api.nvim_win_get_cursor(0)[2]
+  local word = api.nvim_get_current_line():sub(1, col):match("(%w+)$")
+  local snip = word and (snippets[vim.bo.filetype] or {})[word]
+
+  if snip then
+    local row = api.nvim_win_get_cursor(0)[1] - 1
+    api.nvim_buf_set_text(0, row, col - #word, row, col, {})
+    vim.snippet.expand(snip)
+    return
   end
 
-  print(table.concat(lines, "\n"))
-end
+  api.nvim_feedkeys(api.nvim_replace_termcodes("<Tab>", true, false, true), "n", false)
+end, { desc = "Expand snippet or complete" })
 
-map("n", "<leader>ls", show_snippets, { desc = "List snippets" })
+map("n", "<leader>ls", function()
+  local ft_snips = snippets[vim.bo.filetype]
+  if not ft_snips then
+    print("No snippets for " .. vim.bo.filetype)
+    return
+  end
+  local lines = { "Snippets for " .. vim.bo.filetype .. ":" }
+  for k, v in pairs(ft_snips) do
+    lines[#lines + 1] = string.format("  %s → %s", k, v:gsub("\n", " "):sub(1, 50))
+  end
+  print(table.concat(lines, "\n"))
+end, { desc = "List snippets" })
 -- }}}
 
 -- }}}

@@ -4,6 +4,10 @@
       "rev": "e84eaea7ca79610d7047fb1c9d74f15bb1c9db34",
       "src": "https://github.com/p00f/clangd_extensions.nvim"
     },
+    "friendly-snippets": {
+      "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
+      "src": "https://github.com/rafamadriz/friendly-snippets"
+    },
     "leap.nvim": {
       "rev": "0033bcaefc3cd7cf5a70b28cd356fe4860e5c074",
       "src": "https://github.com/ggandor/leap.nvim"
