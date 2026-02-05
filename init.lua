@@ -558,7 +558,7 @@ map("n", "<leader>to", "<cmd>tabonly<CR>", { desc = "Close other tabs" })
 -- }}}
 
 -- STATUSLINE {{{
--- INFO: Statusline
+-- INO: Statusline
 -- A custom-made very simple status line with mods, git, file(name, type)
 -- and some bear navigation indicators
 -- Mode tables {{{
@@ -714,8 +714,8 @@ api.nvim_create_autocmd("VimEnter", {
         return
       end
 
-      local ok, ts = pcall(require, "nvim-treesitter")
-      if not ok then
+      local ok_ts, ts = pcall(require, "nvim-treesitter")
+      if not ok_ts then
         return
       end
 
