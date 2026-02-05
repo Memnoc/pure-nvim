@@ -250,6 +250,9 @@ map("n", "<leader>b", function()
 end, { desc = "Save and source" })
 map("n", "<leader>q", "<cmd>quit<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qall!<CR>", { desc = "Force quit all" })
+map("n", "<leader>;", function()
+  require("mini.starter").open()
+end, { desc = "Dashboard" })
 -- }}}
 
 -- Windows {{{
@@ -889,7 +892,6 @@ end
 -- pick_from_dashboard() makes sure we are not grepping from the PureNvim dashboard
 local function pick_from_dashboard(picker)
   return function()
-
     warn_about_root_dir(picker)
 
     vim.cmd("bdelete!")
@@ -927,6 +929,16 @@ end, { desc = "Diagnostics" })
 local ok_starter = pcall(require, "mini.starter")
 if ok_starter then
   require("mini.starter").setup({
+    evaluate_single = true,
+    footer = os.date(),
+    -- NOTE: In case you want to change to a more general header
+    -- header = table.concat({
+    --   [[  /\ \▔\___  ___/\   /(●)_ __ ___  ]],
+    --   [[ /  \/ / _ \/ _ \ \ / / | '_ ` _ \ ]],
+    --   [[/ /\  /  __/ (_) \ V /| | | | | | |]],
+    --   [[\_\ \/ \___|\___/ \_/ |_|_| |_| |_|]],
+    --   [[───────────────────────────────────]],
+    -- }, "\n"),
     header = table.concat({
       "╔═══════════════════════════════════════╗",
       "║             PURE NVIM                 ║",
@@ -935,14 +947,12 @@ if ok_starter then
       "╚═══════════════════════════════════════╝",
     }, "\n"),
     items = {
-      { name = "Find file",    action = pick_from_dashboard("files"),     section = "Actions" },
-      { name = "Recent files", action = pick_from_dashboard("oldfiles"),  section = "Actions" },
-      { name = "Grep",         action = pick_from_dashboard("grep_live"), section = "Actions" },
-      { name = "Config",       action = "e ~/.config/PureNvim/init.lua",  section = "Actions" },
-      { name = "Mason",        action = "Mason",                          section = "Actions" },
-      { name = "Quit",         action = "qa",                             section = "Actions" },
+      { name = "New Buffer",   action = "enew",                          section = "Builtin actions" },
+      { name = "Recent files", action = pick_from_dashboard("oldfiles"), section = "Actions" },
+      { name = "Config",       action = "e ~/.config/PureNvim/init.lua", section = "Actions" },
+      { name = "Mason",        action = "Mason",                         section = "Plugins" },
+      { name = "Quit",         action = "qall!",                         section = "Builtin actions" },
     },
-    footer = "",
   })
 end
 -- }}}
