@@ -855,15 +855,23 @@ end
 -- }}}
 
 -- Mini.pick helpers {{{
-local function pick_with_guard(picker, opts)
-  opts = opts or {}
+
+-- warn_about_roo_dir() sends a warning message and stops grepping
+-- from the root directory
+local function warn_about_root_dir(picker)
   local cwd = vim.fs.normalize(vim.fn.getcwd())
   local home = vim.fs.normalize(vim.env.HOME)
-
   if cwd == home and (picker == "grep_live" or picker == "files") then
     vim.notify("cd to a project first", vim.log.levels.WARN)
     return false
   end
+end
+
+-- pick_with_guard() helps making sure we are not grepping the entire root dir
+local function pick_with_guard(picker, opts)
+  opts = opts or {}
+
+  warn_about_root_dir(picker)
 
   api.nvim_echo({ { " Searching...", "Comment" } }, false, {})
 
@@ -878,15 +886,11 @@ local function pick_with_guard(picker, opts)
   return true
 end
 
+-- pick_from_dashboard() makes sure we are not grepping from the PureNvim dashboard
 local function pick_from_dashboard(picker)
   return function()
-    local cwd = vim.fs.normalize(vim.fn.getcwd())
-    local home = vim.fs.normalize(vim.env.HOME)
 
-    if cwd == home and (picker == "grep_live" or picker == "files") then
-      vim.notify("cd to a project first", vim.log.levels.WARN)
-      return
-    end
+    warn_about_root_dir(picker)
 
     vim.cmd("bdelete!")
     vim.defer_fn(function()
@@ -1391,16 +1395,10 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
   end
 })
 -- }}}
--- LazyVim symbols {{{
--- Error = " ",
--- Warn  = " ",
--- Hint  = " ",
--- Info  = " ",
--- }}}
 
 -- Diagnostics {{{
 vim.diagnostic.config({
-  virtual_text = { prefix = " " },
+  virtual_text = { prefix = " " },
   signs = {
     text = {
       [vim.diagnostic.severity.ERROR] = " ",
@@ -1410,7 +1408,7 @@ vim.diagnostic.config({
     },
   },
   underline = true,
-  update_in_insert = false,
+  update_in_insert = true,
   float = { border = "rounded" },
 })
 -- }}}
