@@ -787,61 +787,52 @@ if ok_clangd_ext then
 end
 -- }}}
 
---- Oil {{{
+-- Oil {{{
 local ok_oil, oil = pcall(require, "oil")
 if ok_oil then
+  local detail = false
   oil.setup({
+    default_file_explorer = true,
+    delete_to_trash = true,
+    skip_confirm_for_simple_edits = true,
+    watch_for_changes = true,
     columns = { "icon" },
     view_options = {
       show_hidden = true,
+      natural_order = true,
+    },
+    win_options = {
+      wrap = true,
+    },
+    preview_win = {
+      update_on_cursor_moved = true,
+      preview_method = "fast_scratch",
     },
     keymaps = {
-      ["<Esc>"] = function()
-        local win = vim.api.nvim_get_current_win()
-        local is_float = vim.api.nvim_win_get_config(win).relative ~= ""
-        if is_float then
-          oil.close()
-        else
-          oil.close()
-          if #vim.api.nvim_list_wins() > 1 then
-            vim.cmd("close")
+      ["gd"] = {
+        desc = "Toggle file detail view",
+        callback = function()
+          detail = not detail
+          if detail then
+            require("oil").set_columns({ "icon", "permissions", "size", "mtime" })
+          else
+            require("oil").set_columns({ "icon" })
           end
-        end
-      end,
+        end,
+      },
+      ["<Esc>"] = { "actions.close", mode = "n" },
     },
     float = {
       padding = 2,
-      max_width = 0.4,
-      max_height = 0.6,
+      max_width = 0.9,
+      max_height = 0.8,
       border = "rounded",
     },
   })
-
-  local function toggle_oil_float()
-    if vim.bo.filetype == "oil" then
-      oil.close()
-    else
-      oil.open_float()
-    end
-  end
-
-  local function toggle_oil_sidebar()
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-      local buf = vim.api.nvim_win_get_buf(win)
-      if vim.bo[buf].filetype == "oil" then
-        vim.api.nvim_win_close(win, true)
-        return
-      end
-    end
-    vim.cmd("topleft 30vsplit")
-    oil.open()
-  end
-
-  map("n", "<leader>o", toggle_oil_float, { desc = "Oil float (toggle)" })
-  map("n", "<leader>oo", toggle_oil_sidebar, { desc = "File explorer (toggle)" })
+  map("n", "<leader>e", "<cmd>Oil --float<CR>", { desc = "File explorer" })
   map("n", "-", "<cmd>Oil<CR>", { desc = "Open parent directory" })
 end
--- }}}-
+-- }}}
 
 -- Mini.pick {{{
 local ok_pick = pcall(require, "mini.pick")
@@ -860,53 +851,6 @@ end
 local ok_extra = pcall(require, "mini.extra")
 if ok_extra then
   require("mini.extra").setup()
-end
--- }}}
-
-
--- Mini.files {{{
-local ok_files, files = pcall(require, "mini.files")
-if ok_files then
-  files.setup({
-    mappings = {
-      go_in       = "l",
-      go_in_plus  = "<CR>",
-      go_out      = "h",
-      go_out_plus = "-",
-      synchronize = "s",
-      reset       = "<BS>",
-      close       = "<Esc>",
-    },
-    options = {
-      use_as_default_explorer = true,
-      permanent_delete = false,
-    },
-    windows = {
-      preview = true,
-      width_focus = 30,
-      width_nofocus = 15,
-      width_preview = 40,
-    },
-  })
-
-  -- Open at current file or cwd
-  map("n", "<leader>e", function()
-    if not files.close() then
-      files.open(vim.api.nvim_buf_get_name(0))
-    end
-  end, { desc = "File explorer (current)" })
-
-  map("n", "<leader>E", function()
-    if not files.close() then
-      files.open(vim.fn.getcwd())
-    end
-  end, { desc = "File explorer (cwd)" })
-
-  -- Also hijack netrw's `-`
-  map("n", "-", function()
-    files.open(vim.api.nvim_buf_get_name(0))
-    files.trim_right()
-  end, { desc = "Parent directory" })
 end
 -- }}}
 
