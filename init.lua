@@ -435,12 +435,12 @@ api.nvim_create_autocmd("BufWritePre", {
   group = augroup,
   callback = function()
     local dir = vim.fn.expand("<afile>:p:h")
+    if dir:match("^%w+://") then return end
     if vim.fn.isdirectory(dir) == 0 then
       vim.fn.mkdir(dir, "p")
     end
   end,
 })
--- }}}
 
 -- }}}
 
@@ -1154,7 +1154,7 @@ local snippets = {
     ife = "if (${1:condition}) {\n\t$2\n} else {\n\t$0\n}",
     struct = "typedef struct {\n\t$0\n} ${1:name}_t;",
     fn = "${1:void} ${2:name}(${3:void}) {\n\t$0\n}",
-    pr = 'printf("${1:%s}\\n"${2:, $3});',
+    pr = 'printf("${1:%s}\\\\n", ${0});',
   },
   cpp = {
     main = "int main(int argc, char *argv[]) {\n\t$0\n\treturn 0;\n}",
