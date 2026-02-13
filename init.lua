@@ -1323,12 +1323,35 @@ vim.lsp.config("lua_ls", {
   },
 })
 
--- INFO: Gdscript server 
+-- INFO: Godot server
 vim.lsp.config("gdscript", {
   cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
   root_markers = { "project.godot", ".git" },
   filetypes = { "gdscript" },
 })
+
+-- Run current Godot project
+map("n", "<leader>mg", function()
+  local root = vim.fs.dirname(vim.fs.find({ "project.godot" }, { upward = true })[1])
+  if root then
+    vim.fn.jobstart({ "godot", "--path", root }, { detach = true })
+  else
+    print("No project.godot found")
+  end
+end, { desc = "Run Godot project" })
+
+-- Run specific scene (current file's scene if it exists)
+map("n", "<leader>ms", function()
+  local root = vim.fs.dirname(vim.fs.find({ "project.godot" }, { upward = true })[1])
+  local scene = vim.fn.expand("%:r") .. ".tscn"
+  if root and vim.fn.filereadable(scene) == 1 then
+    vim.fn.jobstart({ "/Applications/Godot.app/Contents/MacOS/Godot", "--path", root }, { detach = true })
+  else
+    print("No matching .tscn scene found")
+  end
+end, { desc = "Run current scene" })
+
+
 -- }}}
 
 -- Enable servers {{{
