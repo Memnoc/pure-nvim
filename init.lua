@@ -686,6 +686,7 @@ local treesitter_parsers = {
   "yaml",
   "markdown",
   "markdown_inline",
+  "gdscript",
 }
 -- }}}
 
@@ -1321,10 +1322,17 @@ vim.lsp.config("lua_ls", {
     },
   },
 })
+
+-- INFO: Gdscript server 
+vim.lsp.config("gdscript", {
+  cmd = vim.lsp.rpc.connect("127.0.0.1", 6005),
+  root_markers = { "project.godot", ".git" },
+  filetypes = { "gdscript" },
+})
 -- }}}
 
 -- Enable servers {{{
-pcall(vim.lsp.enable, { "clangd", "rust_analyzer", "lua_ls" })
+pcall(vim.lsp.enable, { "clangd", "rust_analyzer", "lua_ls", "gdscript" })
 -- }}}
 
 ---- Attach {{{
